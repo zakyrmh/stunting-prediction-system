@@ -12,8 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'admin'   => \App\Http\Middleware\EnsureUserIsAdmin::class,
-            'petugas' => \App\Http\Middleware\EnsureUserIsPetugas::class,
+            'bidan'     => \App\Http\Middleware\EnsureUserIsBidan::class,
+            'kader'     => \App\Http\Middleware\EnsureUserIsKader::class,
+            'orang_tua' => \App\Http\Middleware\EnsureUserIsOrangTua::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

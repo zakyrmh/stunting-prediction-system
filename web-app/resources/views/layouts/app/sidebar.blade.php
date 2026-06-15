@@ -33,14 +33,14 @@
                 </flux:sidebar.item>
             </flux:sidebar.group>
 
-            @if (auth()->user()->isAdmin())
+            @if (auth()->user()->isBidan())
                 <flux:sidebar.group :heading="__('Admin')" class="grid">
-                    <flux:sidebar.item icon="building-2" :href="route('posyandu.index')"
+                    <flux:sidebar.item icon="building-office" :href="route('posyandu.index')"
                         :current="request()->routeIs('posyandu.*')" wire:navigate>
                         {{ __('Posyandu') }}
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="user-cog" :href="route('users.index')"
+                    <flux:sidebar.item icon="user-group" :href="route('users.index')"
                         :current="request()->routeIs('users.*')" wire:navigate>
                         {{ __('Pengguna') }}
                     </flux:sidebar.item>

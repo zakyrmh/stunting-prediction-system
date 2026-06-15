@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureUserIsPetugas
+class EnsureUserIsOrangTua
 {
     /**
      * Handle an incoming request.
@@ -15,8 +15,8 @@ class EnsureUserIsPetugas
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || !auth()->user()->isPetugas()) {
-            abort(403, 'Akses ditolak.');
+        if (!auth()->check() || !auth()->user()->isOrangTua()) {
+            abort(403, 'Akses ditolak. Halaman ini hanya untuk Orang Tua / Ibu Balita.');
         }
 
         return $next($request);

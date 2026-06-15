@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureUserIsAdmin
+class EnsureUserIsBidan
 {
     /**
      * Handle an incoming request.
@@ -15,8 +15,8 @@ class EnsureUserIsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || !auth()->user()->isAdmin()) {
-            abort(403, 'Akses ditolak.');
+        if (!auth()->check() || !auth()->user()->isBidan()) {
+            abort(403, 'Akses ditolak. Halaman ini hanya untuk Bidan / Tenaga Kesehatan.');
         }
 
         return $next($request);

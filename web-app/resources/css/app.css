@@ -9,7 +9,8 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
     --color-zinc-50: #fafafa;
     --color-zinc-100: #f5f5f5;
@@ -26,6 +27,51 @@
     --color-accent: var(--color-neutral-800);
     --color-accent-content: var(--color-neutral-800);
     --color-accent-foreground: var(--color-white);
+
+    /* SiPakar Stunting Brand & Accent Colors */
+    --color-primary-teal: #0B7A5C;
+    --color-primary-light: #E0F5EC;
+    --color-accent-amber: #D97706;
+
+    /* Surface Colors */
+    --color-canvas: #EFF7F2;
+    --color-surface-1: #FFFFFF;
+    --color-surface-2: #E4F2EA;
+    --color-hairline: #C0D9CA;
+    --color-hairline-soft: #D5EAD9;
+    --color-inverse-canvas: #0B3D2E;
+    --color-inverse-surface-1: #1A5C42;
+
+    /* Text Ink Colors */
+    --color-ink: #1A2E22;
+    --color-ink-muted: #4A6B57;
+    --color-ink-subtle: #6B8C74;
+    --color-ink-tertiary: #9EB3A4;
+
+    /* Risk Stunting Palette */
+    --color-risk-low: #16A34A;
+    --color-risk-low-surface: #DCFCE7;
+    --color-risk-low-border: #86EFAC;
+
+    --color-risk-medium: #D97706;
+    --color-risk-medium-surface: #FEF3C7;
+    --color-risk-medium-border: #FCD34D;
+
+    --color-risk-high: #DC2626;
+    --color-risk-high-surface: #FEE2E2;
+    --color-risk-high-border: #FCA5A5;
+
+    /* Semantic Colors */
+    --color-info: #0369A1;
+    --color-info-surface: #E0F2FE;
+
+    /* Shapes & Border Radius Scale */
+    --radius-xs: 4px;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+    --radius-xxl: 28px;
 }
 
 @layer theme {
@@ -34,6 +80,115 @@
         --color-accent-content: var(--color-white);
         --color-accent-foreground: var(--color-neutral-800);
     }
+}
+
+/* Typography Utilities as defined in DESIGN.md */
+@utility text-display-xl {
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1.10;
+    letter-spacing: -1.2px;
+}
+
+@utility text-display-lg {
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.8px;
+}
+
+@utility text-display-md {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.20;
+    letter-spacing: -0.5px;
+}
+
+@utility text-headline {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+}
+
+@utility text-card-title {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.30;
+    letter-spacing: -0.2px;
+}
+
+@utility text-subhead {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: -0.1px;
+}
+
+@utility text-body-lg {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.65;
+    letter-spacing: 0;
+}
+
+@utility text-body-default {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.65;
+    letter-spacing: 0;
+}
+
+@utility text-body-sm {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.55;
+    letter-spacing: 0;
+}
+
+@utility text-caption {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.45;
+    letter-spacing: 0;
+}
+
+@utility text-button-label {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.20;
+    letter-spacing: 0.1px;
+}
+
+@utility text-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.30;
+    letter-spacing: 0.6px;
+    text-transform: none; /* Sentence case, not uppercase */
+}
+
+@utility text-data {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.50;
+    letter-spacing: 0;
+}
+
+@utility text-data-display {
+    font-family: var(--font-mono);
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+}
+
+@utility text-data-label {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.30;
+    letter-spacing: 0.8px;
 }
 
 @layer base {

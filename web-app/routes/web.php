@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
 Route::view('/', 'welcome')->name('home');
+Route::view('/edukasi', 'edukasi')->name('edukasi');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
@@ -20,8 +21,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('/prediksi/tambah', 'prediction.form')->name('prediksi.form');
     Volt::route('/prediksi/{prediction}', 'prediction.show')->name('prediksi.show');
 
-    // Admin only
-    Route::middleware(['admin'])->group(function () {
+    // Bidan only
+    Route::middleware(['bidan'])->group(function () {
         Volt::route('/posyandu', 'posyandu.index')->name('posyandu.index');
         Volt::route('/posyandu/tambah', 'posyandu.form')->name('posyandu.form');
 

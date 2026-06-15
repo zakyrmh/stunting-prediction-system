@@ -25,17 +25,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::before(function ($user, $ability) {
-            if ($user->isAdmin()) {
+            if ($user->isBidan()) {
                 return true;
             }
         });
 
         Gate::define('manage-posyandu', function ($user) {
-            return $user->isAdmin();
+            return $user->isBidan();
         });
 
         Gate::define('manage-users', function ($user) {
-            return $user->isAdmin();
+            return $user->isBidan();
         });
 
         $this->configureDefaults();

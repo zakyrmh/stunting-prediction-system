@@ -19,6 +19,9 @@ class extends Component {
 
     public function delete(int $id): void
     {
+        if (!auth()->user()->isBidan()) {
+            abort(403, 'Hanya Bidan yang dapat menghapus data.');
+        }
         $balita = Balita::findOrFail($id);
         $balita->delete();
         session()->flash('success', 'Data balita berhasil dihapus.');
@@ -28,7 +31,7 @@ class extends Component {
     {
         $query = Balita::query()->with('posyandu');
 
-        if (auth()->user()->isPetugas()) {
+        if (!auth()->user()->isBidan()) {
             $query->where('user_id', auth()->id());
         }
 
@@ -54,13 +57,15 @@ class extends Component {
             <flux:heading size="xl">Data Balita</flux:heading>
             <flux:text class="mt-1">Kelola data balita yang terdaftar.</flux:text>
         </div>
-        <flux:button
-            icon="plus"
-            variant="primary"
-            :href="route('balita.form')"
-            wire:navigate>
-            Tambah Balita
-        </flux:button>
+        @if(!auth()->user()->isOrangTua())
+            <flux:button
+                icon="plus"
+                variant="primary"
+                :href="route('balita.form')"
+                wire:navigate>
+                Tambah Balita
+            </flux:button>
+        @endif
     </div>
 
     {{-- Flash Message --}}
@@ -114,18 +119,22 @@ class extends Component {
                                 icon="eye"
                                 :href="route('balita.show', $balita->id)"
                                 wire:navigate />
-                            <flux:button
-                                size="sm"
-                                icon="pencil"
-                                variant="filled"
-                                :href="route('balita.form', $balita->id)"
-                                wire:navigate />
-                            <flux:button
-                                size="sm"
-                                icon="trash"
-                                variant="danger"
-                                wire:click="delete({{ $balita->id }})"
-                                wire:confirm="Yakin ingin menghapus data balita ini?" />
+                            @if(!auth()->user()->isOrangTua())
+                                <flux:button
+                                    size="sm"
+                                    icon="pencil"
+                                    variant="filled"
+                                    :href="route('balita.form', $balita->id)"
+                                    wire:navigate />
+                            @endif
+                            @if(auth()->user()->isBidan())
+                                <flux:button
+                                    size="sm"
+                                    icon="trash"
+                                    variant="danger"
+                                    wire:click="delete({{ $balita->id }})"
+                                    wire:confirm="Yakin ingin menghapus data balita ini?" />
+                            @endif
                         </div>
                     </flux:table.cell>
                 </flux:table.row>

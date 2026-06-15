@@ -40,14 +40,19 @@ class User extends Authenticatable
             ->implode('');
     }
 
-    public function isAdmin(): bool
+    public function isBidan(): bool
     {
-        return $this->role === 'admin';
+        return $this->role === 'bidan';
     }
 
-    public function isPetugas(): bool
+    public function isKader(): bool
     {
-        return $this->role === 'petugas';
+        return $this->role === 'kader';
+    }
+
+    public function isOrangTua(): bool
+    {
+        return $this->role === 'orang_tua';
     }
 
     public function posyandu(): BelongsTo

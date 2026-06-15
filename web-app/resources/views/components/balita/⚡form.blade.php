@@ -21,8 +21,12 @@ class extends Component {
 
     public function mount(int $balita = null): void
     {
-        // Jika petugas, otomatis pakai posyandu miliknya
-        if (auth()->user()->isPetugas()) {
+        if (auth()->user()->isOrangTua()) {
+            abort(403, 'Akses ditolak. Orang Tua tidak diizinkan mengubah data.');
+        }
+
+        // Jika kader, otomatis pakai posyandu miliknya
+        if (auth()->user()->isKader()) {
             $this->posyandu_id = auth()->user()->posyandu_id;
         }
 
