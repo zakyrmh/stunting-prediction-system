@@ -6,9 +6,9 @@
         @if(auth()->user()->isBidan())
             <x-dashboard.bidan :data="$bidanData" />
         @elseif(auth()->user()->isKader())
-            <x-dashboard.kader />
+            <x-dashboard.kader :data="$kaderData" />
         @elseif(auth()->user()->isOrangTua())
-            <x-dashboard.orang-tua />
+            <x-dashboard.orang-tua :data="$parentData" />
         @endif
 
     </div>
