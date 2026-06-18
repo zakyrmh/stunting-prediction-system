@@ -1,48 +1,68 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     @include('partials.head')
 </head>
 
-<body class="min-h-screen bg-white dark:bg-zinc-800">
+<body class="min-h-screen bg-canvas text-ink font-sans">
     <flux:sidebar sticky collapsible="mobile"
-        class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-        <flux:sidebar.header>
+        class="border-r border-hairline bg-surface-1">
+        <flux:sidebar.header class="border-b border-hairline-soft">
             <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
             <flux:sidebar.collapse class="lg:hidden" />
         </flux:sidebar.header>
 
         <flux:sidebar.nav>
-            <flux:sidebar.group :heading="__('Platform')" class="grid">
-                <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
-                    wire:navigate>
-                    {{ __('Dashboard') }}
-                </flux:sidebar.item>
-            </flux:sidebar.group>
+            <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                {{ __('Dashboard') }}
+            </flux:sidebar.item>
 
-            <flux:sidebar.group :heading="__('Data')" class="grid">
-                <flux:sidebar.item icon="users" :href="route('balita.index')"
-                    :current="request()->routeIs('balita.*')" wire:navigate>
-                    {{ __('Data Balita') }}
-                </flux:sidebar.item>
-
-                <flux:sidebar.item icon="banknotes" :href="route('prediksi.index')"
-                    :current="request()->routeIs('prediksi.*')" wire:navigate>
-                    {{ __('Prediksi') }}
-                </flux:sidebar.item>
-            </flux:sidebar.group>
-
+            <!-- 1. Bidan / Tenaga Kesehatan Menu -->
             @if (auth()->user()->isBidan())
-                <flux:sidebar.group :heading="__('Admin')" class="grid">
-                    <flux:sidebar.item icon="building-office" :href="route('posyandu.index')"
-                        :current="request()->routeIs('posyandu.*')" wire:navigate>
-                        {{ __('Posyandu') }}
+                <flux:sidebar.group :heading="__('Data & Pengukuran')" class="grid">
+                    <flux:sidebar.item icon="users" :href="route('balita.index')" :current="request()->routeIs('balita.index')" wire:navigate>
+                        {{ __('Data Induk Balita') }}
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="user-group" :href="route('users.index')"
-                        :current="request()->routeIs('users.*')" wire:navigate>
-                        {{ __('Pengguna') }}
+                    <flux:sidebar.item icon="document-text" :href="route('prediksi.index')" :current="request()->routeIs('prediksi.index')" wire:navigate>
+                        {{ __('Riwayat Pengukuran') }}
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
+
+                <flux:sidebar.group :heading="__('Manajemen Sistem')" class="grid">
+                    <flux:sidebar.item icon="building-office" :href="route('posyandu.index')" :current="request()->routeIs('posyandu.*')" wire:navigate>
+                        {{ __('Data Posyandu') }}
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="user-group" :href="route('users.index')" :current="request()->routeIs('users.*')" wire:navigate>
+                        {{ __('Manajemen Kader') }}
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
+
+            <!-- 2. Kader Posyandu Menu -->
+            @elseif (auth()->user()->isKader())
+                <flux:sidebar.group :heading="__('Registrasi & Input')" class="grid">
+                    <flux:sidebar.item icon="user-plus" :href="route('balita.form')" :current="request()->routeIs('balita.form')" wire:navigate>
+                        {{ __('Pendaftaran Balita') }}
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="pencil-square" :href="route('prediksi.form')" :current="request()->routeIs('prediksi.form')" wire:navigate>
+                        {{ __('Pencatatan Bulanan') }}
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
+
+                <flux:sidebar.group :heading="__('Laporan & Data')" class="grid">
+                    <flux:sidebar.item icon="users" :href="route('balita.index')" :current="request()->routeIs('balita.index')" wire:navigate>
+                        {{ __('Daftar & Riwayat Anak') }}
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
+
+            <!-- 3. Orang Tua Balita Menu -->
+            @elseif (auth()->user()->isOrangTua())
+                <flux:sidebar.group :heading="__('Informasi & Panduan')" class="grid">
+                    <flux:sidebar.item icon="book-open" :href="route('edukasi')" :current="request()->routeIs('edukasi')" wire:navigate>
+                        {{ __('Edukasi Kesehatan') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
             @endif
@@ -50,23 +70,11 @@
 
         <flux:spacer />
 
-        <flux:sidebar.nav>
-            <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit"
-                target="_blank">
-                {{ __('Repository') }}
-            </flux:sidebar.item>
-
-            <flux:sidebar.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire"
-                target="_blank">
-                {{ __('Documentation') }}
-            </flux:sidebar.item>
-        </flux:sidebar.nav>
-
         <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
     </flux:sidebar>
 
     <!-- Mobile User Menu -->
-    <flux:header class="lg:hidden">
+    <flux:header class="lg:hidden border-b border-hairline bg-surface-1">
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
         <flux:spacer />

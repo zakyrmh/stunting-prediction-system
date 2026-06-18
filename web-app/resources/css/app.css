@@ -216,6 +216,82 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
-/* \[:where(&)\]:size-4 {
-    @apply size-4;
-} */
+/* --- SiPakar Stunting Custom Theme Overrides for Flux UI --- */
+
+body {
+    background-color: var(--color-canvas) !important;
+    color: var(--color-ink) !important;
+    font-family: var(--font-sans) !important;
+}
+
+/* Sidebar background & border */
+ui-sidebar, [data-flux-sidebar] {
+    background-color: var(--color-surface-1) !important;
+    border-right: 1px solid var(--color-hairline) !important;
+}
+
+/* Sidebar header boundary */
+ui-sidebar-header, [data-flux-sidebar-header] {
+    border-bottom: 1px solid var(--color-hairline-soft) !important;
+}
+
+/* Header (Top Navigation) background & border */
+ui-header, [data-flux-header] {
+    background-color: var(--color-surface-1) !important;
+    border-bottom: 1px solid var(--color-hairline) !important;
+}
+
+/* Sidebar Items: Inactive State */
+ui-sidebar-item, [data-flux-sidebar-item] {
+    color: var(--color-ink-muted) !important;
+    font-family: var(--font-sans) !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+/* Sidebar Items: Active / Current State */
+ui-sidebar-item[current], [data-flux-sidebar-item][current] {
+    background-color: var(--color-primary-light) !important;
+    color: var(--color-primary-teal) !important;
+    font-weight: 600 !important;
+}
+
+/* Sidebar Items: Hover State */
+ui-sidebar-item:hover:not([current]), [data-flux-sidebar-item]:hover:not([current]) {
+    background-color: var(--color-surface-2) !important;
+    color: var(--color-ink) !important;
+}
+
+/* Sidebar Group Headings (Eyebrows) */
+ui-sidebar-group-heading, [data-flux-sidebar-group-heading] {
+    color: var(--color-ink-subtle) !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.8px !important;
+    text-transform: none !important; /* Sentence case as mandated in DESIGN.md */
+}
+
+/* Navbar / Top navigation items */
+ui-navbar-item, [data-flux-navbar-item] {
+    color: var(--color-ink-muted) !important;
+    font-family: var(--font-sans) !important;
+    font-size: 15px !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+ui-navbar-item[current], [data-flux-navbar-item][current] {
+    border-bottom: 2px solid var(--color-primary-teal) !important;
+    color: var(--color-primary-teal) !important;
+    font-weight: 600 !important;
+}
+
+ui-navbar-item:hover:not([current]), [data-flux-navbar-item]:hover:not([current]) {
+    color: var(--color-primary-teal) !important;
+}
+
+/* Focus Indicator Ring for Accessibility */
+input:focus, textarea:focus, select:focus, button:focus, [data-flux-control]:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 2px var(--color-canvas), 0 0 0 4px var(--color-primary-teal) !important;
+}
