@@ -5,6 +5,7 @@ use Livewire\Volt\Volt;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ChildrenController;
 use App\Http\Controllers\PredictionController;
+use App\Http\Controllers\PosyanduController;
 
 Route::view('/', 'welcome')->name('home');
 Route::view('/edukasi', 'edukasi')->name('edukasi');
@@ -27,7 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Bidan only
     Route::middleware(['bidan'])->group(function () {
-        Volt::route('/posyandu', 'posyandu.index')->name('posyandu.index');
+        Route::get('/posyandu', [PosyanduController::class, 'index'])->name('posyandu.index');
         Volt::route('/posyandu/tambah', 'posyandu.form')->name('posyandu.form');
 
         Volt::route('/users', 'users.index')->name('users.index');
