@@ -1,12 +1,12 @@
 <?php
 
 use Livewire\Component;
-use App\Models\Balita;
+use App\Models\Children;
 
 new class extends Component {
-    public Balita $balita;
+    public Children $balita;
 
-    public function mount(Balita $balita): void
+    public function mount(Children $balita): void
     {
         $this->balita = $balita->load('posyandu');
     }

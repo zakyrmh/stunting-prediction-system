@@ -2,26 +2,29 @@
 
 namespace App\Policies;
 
-use App\Models\Balita;
+use App\Models\Children;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
-class BalitaPolicy
+class ChildrenPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Balita $balita): bool
+    public function view(User $user, Children $child): bool
     {
-        return false;
+        if ($user->isBidan() || $user->isKader()) {
+            return true;
+        }
+
+        return $child->user_id === $user->id;
     }
 
     /**
@@ -29,38 +32,38 @@ class BalitaPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->isBidan() || $user->isKader();
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Balita $balita): bool
+    public function update(User $user, Children $child): bool
     {
-        return false;
+        return $user->isBidan() || $user->isKader();
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Balita $balita): bool
+    public function delete(User $user, Children $child): bool
     {
-        return false;
+        return $user->isBidan();
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Balita $balita): bool
+    public function restore(User $user, Children $child): bool
     {
-        return false;
+        return $user->isBidan();
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Balita $balita): bool
+    public function forceDelete(User $user, Children $child): bool
     {
-        return false;
+        return $user->isBidan();
     }
 }
