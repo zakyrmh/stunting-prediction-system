@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ChildrenController;
+use App\Http\Controllers\PredictionController;
 
 Route::view('/', 'welcome')->name('home');
 Route::view('/edukasi', 'edukasi')->name('edukasi');
@@ -20,7 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('/balita/{balita}', 'balita.show')->name('balita.show');
 
     // Prediksi
-    Volt::route('/prediksi', 'prediction.index')->name('prediksi.index');
+    Route::get('/prediksi', [PredictionController::class, 'index'])->name('prediksi.index');
     Volt::route('/prediksi/tambah', 'prediction.form')->name('prediksi.form');
     Volt::route('/prediksi/{prediction}', 'prediction.show')->name('prediksi.show');
 
