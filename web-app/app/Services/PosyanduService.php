@@ -142,4 +142,18 @@ class PosyanduService
             'selectedPosyanduId' => $selectedPosyanduId,
         ];
     }
+
+    /**
+     * Create and persist a new Posyandu record.
+     */
+    public function createPosyandu(array $data): Posyandu
+    {
+        return Posyandu::create([
+            'name'     => $data['name'],
+            'address'  => $data['address'],
+            'village'  => $data['village'],
+            'district' => $data['district'],
+            'city'     => $data['city'],
+        ]);
+    }
 }

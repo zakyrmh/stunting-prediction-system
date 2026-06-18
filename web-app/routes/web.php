@@ -30,7 +30,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Bidan only
     Route::middleware(['bidan'])->group(function () {
         Route::get('/posyandu', [PosyanduController::class, 'index'])->name('posyandu.index');
-        Volt::route('/posyandu/tambah', 'posyandu.form')->name('posyandu.form');
+        Route::get('/posyandu/tambah', [PosyanduController::class, 'create'])->name('posyandu.form');
+        Route::post('/posyandu/tambah', [PosyanduController::class, 'store'])->name('posyandu.store');
 
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
