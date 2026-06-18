@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable(['posyandu_id', 'user_id', 'name', 'nik', 'birth_date', 'birth_place', 'gender', 'address'])]
-class Balita extends Model
+class Children extends Model
 {
     use HasFactory;
 
@@ -29,5 +30,10 @@ class Balita extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function predictions(): HasMany
+    {
+        return $this->hasMany(Prediction::class, 'child_id');
     }
 }

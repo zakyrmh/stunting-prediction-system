@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['posyandu_id', 'user_id', 'weight', 'height', 'age_months', 'examined_at', 'result', 'confidence', 'notes'])]
+#[Fillable(['child_id', 'posyandu_id', 'recorded_by', 'session_id', 'weight', 'height', 'age_months', 'examined_at', 'result', 'confidence', 'notes'])]
 class Prediction extends Model
 {
     use HasFactory;
@@ -28,8 +28,13 @@ class Prediction extends Model
         return $this->belongsTo(Posyandu::class);
     }
 
-    public function user(): BelongsTo
+    public function child(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Children::class);
+    }
+
+    public function recorder(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'recorded_by');
     }
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use App\Http\Controllers\DashboardController;
 
 Route::view('/', 'welcome')->name('home');
 Route::view('/edukasi', 'edukasi')->name('edukasi');
@@ -9,7 +10,7 @@ Route::view('/edukasi', 'edukasi')->name('edukasi');
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // Dashboard
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Balita
     Volt::route('/balita', 'balita.index')->name('balita.index');

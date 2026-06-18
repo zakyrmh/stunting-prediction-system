@@ -18,7 +18,11 @@ class PosyanduFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => 'Posyandu ' . fake()->streetName(),
+            'address' => fake()->address(),
+            'village' => fake()->words(2, true),
+            'district' => fake()->city(),
+            'city' => fake()->city(),
         ];
     }
 }

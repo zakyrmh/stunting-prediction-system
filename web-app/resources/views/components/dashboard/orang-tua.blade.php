@@ -4,7 +4,7 @@
     <div class="lg:col-span-5 flex flex-col gap-6 w-full">
         
         <!-- 1. Ringkasan Status Anak Terakhir -->
-        <div class="bg-surface-1 border-l-4 border-risk-medium border-y border-r border-hairline rounded-xl p-6 shadow-sm">
+        <div class="bg-surface-1 border-l-4 border-risk-medium border-y border-r rounded-xl p-6 shadow-sm">
             <span class="text-caption font-bold text-ink-subtle uppercase tracking-wider block mb-4 font-sans">Profil Tumbuh Kembang</span>
             
             <div class="flex items-center gap-3.5 mb-5 border-b border-hairline-soft pb-4">

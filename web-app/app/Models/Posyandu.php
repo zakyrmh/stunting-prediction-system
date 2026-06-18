@@ -17,9 +17,9 @@ class Posyandu extends Model
         return $this->hasMany(User::class);
     }
 
-    public function balitas(): HasMany
+    public function children(): HasMany
     {
-        return $this->hasMany(Balita::class);
+        return $this->hasMany(Children::class);
     }
 
     public function predictions(): HasMany

@@ -60,9 +60,9 @@ class User extends Authenticatable
         return $this->belongsTo(Posyandu::class);
     }
 
-    public function balitas(): HasMany
+    public function children(): HasMany
     {
-        return $this->hasMany(Balita::class);
+        return $this->hasMany(Children::class);
     }
 
     public function predictions(): HasMany

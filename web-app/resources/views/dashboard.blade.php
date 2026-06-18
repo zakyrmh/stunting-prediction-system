@@ -4,7 +4,7 @@
         <x-dashboard.welcome />
 
         @if(auth()->user()->isBidan())
-            <x-dashboard.bidan />
+            <x-dashboard.bidan :data="$bidanData" />
         @elseif(auth()->user()->isKader())
             <x-dashboard.kader />
         @elseif(auth()->user()->isOrangTua())

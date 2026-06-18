@@ -1,13 +1,15 @@
+@props(['data'])
+
 <!-- Widget Statistik Global -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <!-- Stat Card 1: Total Balita -->
     <div class="bg-surface-1 border-l-4 border-primary-teal border-y border-r rounded-lg p-6 shadow-sm flex flex-col justify-between">
         <div>
             <span class="text-caption font-bold text-ink-subtle uppercase tracking-wider block">Total Balita Terdaftar</span>
-            <span class="text-display-md text-ink font-bold block mt-2">148</span>
+            <span class="text-display-md text-ink font-bold block mt-2 font-mono">{{ $data['totalChildren'] }}</span>
         </div>
         <p class="text-caption text-ink-muted mt-4">
-            <span class="text-risk-low font-bold">↑ 4 Balita baru</span> bulan ini di wilayah Puskesmas.
+            <span class="text-risk-low font-bold">↑ {{ $data['newChildrenCount'] }} Balita baru</span> bulan ini di wilayah Puskesmas.
         </p>
     </div>
 
@@ -16,11 +18,11 @@
         <div>
             <span class="text-caption font-bold text-ink-subtle uppercase tracking-wider block">Balita Stunting (Lampu Merah)</span>
             <div class="flex items-baseline gap-2 mt-2">
-                <span class="text-display-md text-risk-high font-bold">12</span>
-                <span class="text-body-sm font-semibold text-risk-high">(8.1%)</span>
+                <span class="text-display-md text-risk-high font-bold font-mono">{{ $data['stuntedCount'] }}</span>
+                <span class="text-body-sm font-semibold text-risk-high font-mono">({{ $data['stuntedPercentage'] }}%)</span>
             </div>
         </div>
-        <p class="text-caption text-ink-muted mt-4">
+        <p class="text-caption text-ink-muted mt-4 font-sans">
             Tinggi badan di bawah <strong class="text-risk-high font-semibold">-2 SD WHO</strong> (Butuh Intervensi Gizi).
         </p>
     </div>
@@ -30,11 +32,11 @@
         <div>
             <span class="text-caption font-bold text-ink-subtle uppercase tracking-wider block">Gagal Tumbuh (Lampu Kuning)</span>
             <div class="flex items-baseline gap-2 mt-2">
-                <span class="text-display-md text-risk-medium font-bold">24</span>
-                <span class="text-body-sm font-semibold text-risk-medium">(16.2%)</span>
+                <span class="text-display-md text-risk-medium font-bold font-mono">{{ $data['growthFalteringCount'] }}</span>
+                <span class="text-body-sm font-semibold text-risk-medium font-mono">({{ $data['growthFalteringPercentage'] }}%)</span>
             </div>
         </div>
-        <p class="text-caption text-ink-muted mt-4">
+        <p class="text-caption text-ink-muted mt-4 font-sans">
             Balita terdeteksi <strong class="text-risk-medium font-semibold">2T (2 Kali Tidak Naik)</strong> pada berat badannya.
         </p>
     </div>
@@ -128,11 +130,11 @@
             <h3 class="text-headline text-ink font-bold">Antrean Verifikasi Sistem Pakar</h3>
             <p class="text-body-sm text-ink-muted">Hasil kuesioner gejala klinis Certainty Factor tinggi yang membutuhkan verifikasi dokter/bidan.</p>
         </div>
-        <span class="px-2.5 py-1 bg-risk-high-surface text-risk-high font-bold text-xs rounded">3 Menunggu</span>
+        <span class="px-2.5 py-1 bg-risk-high-surface text-risk-high font-bold text-xs rounded font-mono">{{ $data['pendingVerificationsCount'] }} Menunggu</span>
     </div>
 
     <div class="overflow-x-auto">
-        <table class="w-full text-left text-body-sm">
+        <table class="w-full text-left text-body-sm min-w-[600px]">
             <thead>
                 <tr class="bg-surface-2 text-ink font-semibold border-b border-hairline">
                     <th class="p-3">Balita</th>
@@ -143,45 +145,33 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="border-b border-hairline-soft hover:bg-canvas/40 transition-colors">
-                    <td class="p-3 font-semibold">Azkadina Zanza</td>
-                    <td class="p-3">18 Bulan</td>
-                    <td class="p-3 font-mono font-bold text-risk-high">89.4%</td>
-                    <td class="p-3">
-                        <span class="px-2.5 py-0.5 bg-risk-high-surface text-risk-high rounded text-xs font-semibold">Risiko Tinggi</span>
-                    </td>
-                    <td class="p-3 text-right">
-                        <button class="px-3.5 py-1.5 bg-primary-teal hover:bg-[#096B50] text-white text-xs font-semibold rounded transition-colors cursor-pointer">
-                            Tinjau Rekomendasi Gizi
-                        </button>
-                    </td>
-                </tr>
-                <tr class="border-b border-hairline-soft hover:bg-canvas/40 transition-colors">
-                    <td class="p-3 font-semibold">Muhammad Fathan</td>
-                    <td class="p-3">24 Bulan</td>
-                    <td class="p-3 font-mono font-bold text-risk-medium">76.5%</td>
-                    <td class="p-3">
-                        <span class="px-2.5 py-0.5 bg-risk-medium-surface text-risk-medium rounded text-xs font-semibold">Risiko Sedang</span>
-                    </td>
-                    <td class="p-3 text-right">
-                        <button class="px-3.5 py-1.5 bg-primary-teal hover:bg-[#096B50] text-white text-xs font-semibold rounded transition-colors cursor-pointer">
-                            Tinjau Rekomendasi Gizi
-                        </button>
-                    </td>
-                </tr>
-                <tr class="border-b border-hairline-soft hover:bg-canvas/40 transition-colors">
-                    <td class="p-3 font-semibold">Rayyan Alfarizqi</td>
-                    <td class="p-3">12 Bulan</td>
-                    <td class="p-3 font-mono font-bold text-risk-high">81.2%</td>
-                    <td class="p-3">
-                        <span class="px-2.5 py-0.5 bg-risk-high-surface text-risk-high rounded text-xs font-semibold">Risiko Tinggi</span>
-                    </td>
-                    <td class="p-3 text-right">
-                        <button class="px-3.5 py-1.5 bg-primary-teal hover:bg-[#096B50] text-white text-xs font-semibold rounded transition-colors cursor-pointer">
-                            Tinjau Rekomendasi Gizi
-                        </button>
-                    </td>
-                </tr>
+                @forelse($data['pendingVerifications'] as $verification)
+                    <tr class="border-b border-hairline-soft hover:bg-canvas/40 transition-colors">
+                        <td class="p-3 font-semibold">{{ $verification->prediction->child->name }}</td>
+                        <td class="p-3 font-mono">{{ $verification->prediction->child->birth_date->diffInMonths(now()) }} Bulan</td>
+                        <td class="p-3 font-mono font-bold text-risk-high">{{ number_format($verification->prediction->confidence * 100, 1) }}%</td>
+                        <td class="p-3">
+                            @if($verification->prediction->result === 'severely_stunted')
+                                <span class="px-2.5 py-0.5 bg-risk-high-surface text-risk-high rounded text-xs font-semibold">Sangat Pendek</span>
+                            @elseif($verification->prediction->result === 'stunted')
+                                <span class="px-2.5 py-0.5 bg-risk-high-surface text-risk-high rounded text-xs font-semibold">Pendek (Stunting)</span>
+                            @elseif($verification->prediction->result === 'stunting_risk')
+                                <span class="px-2.5 py-0.5 bg-risk-medium-surface text-risk-medium rounded text-xs font-semibold">Risiko Stunting</span>
+                            @else
+                                <span class="px-2.5 py-0.5 bg-risk-low-surface text-risk-low rounded text-xs font-semibold">Normal</span>
+                            @endif
+                        </td>
+                        <td class="p-3 text-right">
+                            <button class="px-3.5 py-1.5 bg-primary-teal hover:bg-[#096B50] text-white text-xs font-semibold rounded transition-colors cursor-pointer">
+                                Tinjau Rekomendasi Gizi
+                            </button>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="p-4 text-center text-ink-subtle">Tidak ada antrean verifikasi Certainty Factor.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
