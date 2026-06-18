@@ -6,6 +6,7 @@ use App\Models\Children;
 use App\Models\Prediction;
 use App\Models\Intervention;
 use App\Models\User;
+use App\Models\Posyandu;
 
 class ChildrenService
 {
@@ -211,8 +212,10 @@ class ChildrenService
 
         $latestPrediction = $child->predictions->first();
         if ($latestPrediction) {
-            // Update prediction result
-            $latestPrediction->update(['result' => $status]);
+            // Update prediction result if status is a valid enum value
+            if (in_array($status, ['normal', 'stunting_risk', 'stunted', 'severely_stunted'])) {
+                $latestPrediction->update(['result' => $status]);
+            }
 
             // Update intervention status if it exists to done/verified
             $intervention = Intervention::where('prediction_id', $latestPrediction->id)->first();
@@ -220,5 +223,53 @@ class ChildrenService
                 $intervention->update(['status' => 'done']);
             }
         }
+    }
+
+    /**
+     * Get all data required for the children index dashboard.
+     */
+    public function getIndexData(array $filters, User $user): array
+    {
+        $userId = $user->isBidan() ? null : $user->id;
+
+        $search = $filters['search'] ?? '';
+        $filterPosyandu = $filters['filterPosyandu'] ?? '';
+        $filterStatus = $filters['filterStatus'] ?? '';
+        $selectedChildId = $filters['selectedChildId'] ?? null;
+
+        // Fetch filtered children list
+        $children = $this->getChildrenList(
+            $search,
+            $filterPosyandu,
+            $filterStatus,
+            $userId
+        );
+
+        // Auto-select first child if none selected or if selected is not in the current list
+        if ($children->isNotEmpty()) {
+            if (!$selectedChildId || !$children->pluck('id')->contains($selectedChildId)) {
+                $selectedChildId = $children->first()['id'];
+            }
+        } else {
+            $selectedChildId = null;
+        }
+
+        // Fetch detailed record of selected child
+        $selectedChild = $selectedChildId 
+            ? $this->getChildDetails($selectedChildId) 
+            : null;
+
+        // Fetch all posyandus for the dropdown filter
+        $posyandus = Posyandu::all();
+
+        return [
+            'children' => $children,
+            'selectedChild' => $selectedChild,
+            'posyandus' => $posyandus,
+            'search' => $search,
+            'filterPosyandu' => $filterPosyandu,
+            'filterStatus' => $filterStatus,
+            'selectedChildId' => $selectedChildId,
+        ];
     }
 }

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ChildrenController;
 
 Route::view('/', 'welcome')->name('home');
 Route::view('/edukasi', 'edukasi')->name('edukasi');
@@ -13,7 +14,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Balita
-    Volt::route('/balita', 'balita.index')->name('balita.index');
+    Route::get('/balita', [ChildrenController::class, 'index'])->name('balita.index');
+    Route::post('/balita/override/{child}', [ChildrenController::class, 'overrideStatus'])->name('balita.override-status');
     Volt::route('/balita/tambah', 'balita.form')->name('balita.form');
     Volt::route('/balita/{balita}', 'balita.show')->name('balita.show');
 
