@@ -272,4 +272,50 @@ class ChildrenService
             'selectedChildId' => $selectedChildId,
         ];
     }
+
+    /**
+     * Get all data required to render the balita registration form.
+     * Returns posyandu options and orang_tua accounts for dropdowns.
+     */
+    public function getFormData(User $user): array
+    {
+        // Kader hanya bisa mendaftarkan ke posyandu-nya sendiri
+        if ($user->isKader()) {
+            $posyandus = Posyandu::where('id', $user->posyandu_id)->get();
+        } else {
+            $posyandus = Posyandu::orderBy('name')->get();
+        }
+
+        // Daftar akun orang tua untuk linked-account (opsional)
+        $orangTuaList = User::where('role', 'orang_tua')
+            ->orderBy('name')
+            ->get(['id', 'name', 'email']);
+
+        return [
+            'posyandus'    => $posyandus,
+            'orangTuaList' => $orangTuaList,
+        ];
+    }
+
+    /**
+     * Create and persist a new Children (balita) record.
+     */
+    public function createBalita(array $data, User $createdBy): Children
+    {
+        // Kader selalu menggunakan posyandu miliknya
+        $posyanduId = $createdBy->isKader()
+            ? $createdBy->posyandu_id
+            : ($data['posyandu_id'] ?? null);
+
+        return Children::create([
+            'name'        => $data['name'],
+            'nik'         => $data['nik'] ?? null,
+            'birth_date'  => $data['birth_date'],
+            'birth_place' => $data['birth_place'],
+            'gender'      => $data['gender'],
+            'address'     => $data['address'],
+            'posyandu_id' => $posyanduId,
+            'user_id'     => $data['user_id'] ?? null,
+        ]);
+    }
 }

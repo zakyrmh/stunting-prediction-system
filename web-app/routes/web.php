@@ -18,8 +18,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Balita
     Route::get('/balita', [ChildrenController::class, 'index'])->name('balita.index');
+    Route::get('/balita/tambah', [ChildrenController::class, 'create'])->name('balita.form');
+    Route::post('/balita/tambah', [ChildrenController::class, 'store'])->name('balita.store');
     Route::post('/balita/override/{child}', [ChildrenController::class, 'overrideStatus'])->name('balita.override-status');
-    Volt::route('/balita/tambah', 'balita.form')->name('balita.form');
     Volt::route('/balita/{balita}', 'balita.show')->name('balita.show');
 
     // Prediksi

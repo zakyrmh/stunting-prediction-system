@@ -6,7 +6,21 @@
         @if(auth()->user()->isBidan())
             <x-dashboard.bidan :data="$bidanData" />
         @elseif(auth()->user()->isKader())
-            <x-dashboard.kader :data="$kaderData" />
+            @if(empty($kaderData))
+                <div class="bg-amber-50 border border-amber-300 rounded-xl p-6 flex items-start gap-4 shadow-sm">
+                    <span class="text-2xl shrink-0">⚠️</span>
+                    <div>
+                        <h3 class="font-bold text-amber-800 text-lg">Akun Belum Terhubung ke Posyandu</h3>
+                        <p class="text-amber-700 mt-1 text-sm">
+                            Akun Kader Anda belum dikaitkan dengan Posyandu manapun. 
+                            Silakan hubungi <strong>Bidan</strong> atau administrator sistem untuk 
+                            menetapkan Posyandu pada akun Anda agar dapat mengakses dashboard.
+                        </p>
+                    </div>
+                </div>
+            @else
+                <x-dashboard.kader :data="$kaderData" />
+            @endif
         @elseif(auth()->user()->isOrangTua())
             <x-dashboard.orang-tua :data="$parentData" />
         @endif

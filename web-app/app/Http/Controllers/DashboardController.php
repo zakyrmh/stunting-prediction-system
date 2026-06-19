@@ -33,7 +33,9 @@ class DashboardController extends Controller
         if ($user->isBidan()) {
             $bidanData = $this->dashboardService->getBidanData();
         } elseif ($user->isKader()) {
-            $kaderData = $this->dashboardService->getKaderData($user->posyandu_id);
+            if (!is_null($user->posyandu_id)) {
+                $kaderData = $this->dashboardService->getKaderData((int) $user->posyandu_id);
+            }
         } elseif ($user->isOrangTua()) {
             $parentData = $this->dashboardService->getOrangTuaData($user, $request->input('child_id'));
         }
