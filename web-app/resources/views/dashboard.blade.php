@@ -7,14 +7,15 @@
             <x-dashboard.bidan :data="$bidanData" />
         @elseif(auth()->user()->isKader())
             @if(empty($kaderData))
-                <div class="bg-amber-50 border border-amber-300 rounded-xl p-6 flex items-start gap-4 shadow-sm">
-                    <span class="text-2xl shrink-0">⚠️</span>
+                <div class="bg-risk-medium-surface border border-l-4 border-risk-medium-border border-l-risk-medium rounded-xl p-6 flex items-start gap-4">
+                    <span class="text-2xl shrink-0 leading-none mt-0.5">⚠️</span>
                     <div>
-                        <h3 class="font-bold text-amber-800 text-lg">Akun Belum Terhubung ke Posyandu</h3>
-                        <p class="text-amber-700 mt-1 text-sm">
-                            Akun Kader Anda belum dikaitkan dengan Posyandu manapun. 
-                            Silakan hubungi <strong>Bidan</strong> atau administrator sistem untuk 
-                            menetapkan Posyandu pada akun Anda agar dapat mengakses dashboard.
+                        <h3 class="text-headline font-bold text-ink">Akun Belum Terhubung ke Posyandu</h3>
+                        <p class="text-body-default text-ink-muted mt-2 leading-relaxed">
+                            Akun Kader Anda belum dikaitkan dengan Posyandu manapun.
+                            Silakan hubungi <strong class="font-semibold text-ink">Bidan</strong> atau
+                            administrator sistem untuk menetapkan Posyandu pada akun Anda
+                            agar dapat mengakses data dan statistik dashboard.
                         </p>
                     </div>
                 </div>

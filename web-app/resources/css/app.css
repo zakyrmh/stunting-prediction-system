@@ -6,292 +6,485 @@
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
 @source '../../vendor/livewire/flux/stubs/**/*.blade.php';
 
-@custom-variant dark (&:where(.dark, .dark *));
+/* SiPakar Stunting hanya mendukung light mode */
+@custom-variant dark (&:where(.no-dark, .no-dark *));
 
+/* ═══════════════════════════════════════════════════════════
+   DESIGN TOKENS — sesuai DESIGN.md SiPakar Stunting
+═══════════════════════════════════════════════════════════ */
 @theme {
-    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    /* Typography */
+    --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-    --color-zinc-50: #fafafa;
-    --color-zinc-100: #f5f5f5;
-    --color-zinc-200: #e5e5e5;
-    --color-zinc-300: #d4d4d4;
-    --color-zinc-400: #a3a3a3;
-    --color-zinc-500: #737373;
-    --color-zinc-600: #525252;
-    --color-zinc-700: #404040;
-    --color-zinc-800: #262626;
-    --color-zinc-900: #171717;
-    --color-zinc-950: #0a0a0a;
+    /* Brand & Accent */
+    --color-primary-teal:    #0B7A5C;
+    --color-primary-light:   #E0F5EC;
+    --color-accent-amber:    #D97706;
 
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
-    --color-accent-foreground: var(--color-white);
+    /* Surface */
+    --color-canvas:           #EFF7F2;
+    --color-surface-1:        #FFFFFF;
+    --color-surface-2:        #E4F2EA;
+    --color-hairline:         #C0D9CA;
+    --color-hairline-soft:    #D5EAD9;
+    --color-inverse-canvas:   #0B3D2E;
+    --color-inverse-surface-1:#1A5C42;
 
-    /* SiPakar Stunting Brand & Accent Colors */
-    --color-primary-teal: #0B7A5C;
-    --color-primary-light: #E0F5EC;
-    --color-accent-amber: #D97706;
+    /* Text Ink */
+    --color-ink:              #1A2E22;
+    --color-ink-muted:        #4A6B57;
+    --color-ink-subtle:       #6B8C74;
+    --color-ink-tertiary:     #9EB3A4;
+    --color-inverse-ink:      #FFFFFF;
+    --color-inverse-ink-muted:#B8D4C5;
 
-    /* Surface Colors */
-    --color-canvas: #EFF7F2;
-    --color-surface-1: #FFFFFF;
-    --color-surface-2: #E4F2EA;
-    --color-hairline: #C0D9CA;
-    --color-hairline-soft: #D5EAD9;
-    --color-inverse-canvas: #0B3D2E;
-    --color-inverse-surface-1: #1A5C42;
-
-    /* Text Ink Colors */
-    --color-ink: #1A2E22;
-    --color-ink-muted: #4A6B57;
-    --color-ink-subtle: #6B8C74;
-    --color-ink-tertiary: #9EB3A4;
-
-    /* Risk Stunting Palette */
-    --color-risk-low: #16A34A;
+    /* Risk Palette — ONLY for stunting indicators */
+    --color-risk-low:         #16A34A;
     --color-risk-low-surface: #DCFCE7;
-    --color-risk-low-border: #86EFAC;
+    --color-risk-low-border:  #86EFAC;
 
-    --color-risk-medium: #D97706;
-    --color-risk-medium-surface: #FEF3C7;
+    --color-risk-medium:        #D97706;
+    --color-risk-medium-surface:#FEF3C7;
     --color-risk-medium-border: #FCD34D;
 
-    --color-risk-high: #DC2626;
-    --color-risk-high-surface: #FEE2E2;
-    --color-risk-high-border: #FCA5A5;
+    --color-risk-high:          #DC2626;
+    --color-risk-high-surface:  #FEE2E2;
+    --color-risk-high-border:   #FCA5A5;
 
-    /* Semantic Colors */
-    --color-info: #0369A1;
-    --color-info-surface: #E0F2FE;
+    /* Semantic */
+    --color-info:             #0369A1;
+    --color-info-surface:     #E0F2FE;
+    --color-success:          #16A34A;
+    --color-error:            #DC2626;
+    --color-error-surface:    #FEE2E2;
 
-    /* Shapes & Border Radius Scale */
-    --radius-xs: 4px;
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 14px;
-    --radius-xl: 20px;
-    --radius-xxl: 28px;
+    /* Border Radius Scale */
+    --radius-xs:   4px;
+    --radius-sm:   6px;
+    --radius-md:   10px;
+    --radius-lg:   14px;
+    --radius-xl:   20px;
+    --radius-xxl:  28px;
+
+    /* Flux UI accent override → Teal brand */
+    --color-accent:            var(--color-primary-teal);
+    --color-accent-content:    var(--color-primary-teal);
+    --color-accent-foreground: #FFFFFF;
 }
 
-@layer theme {
-    .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-neutral-800);
-    }
-}
+/* ═══════════════════════════════════════════════════════════
+   TYPOGRAPHY UTILITY CLASSES — sesuai DESIGN.md
+═══════════════════════════════════════════════════════════ */
 
-/* Typography Utilities as defined in DESIGN.md */
 @utility text-display-xl {
-    font-size: 52px;
-    font-weight: 700;
-    line-height: 1.10;
-    letter-spacing: -1.2px;
+    font-size: 52px; font-weight: 700;
+    line-height: 1.10; letter-spacing: -1.2px;
 }
-
 @utility text-display-lg {
-    font-size: 40px;
-    font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -0.8px;
+    font-size: 40px; font-weight: 700;
+    line-height: 1.15; letter-spacing: -0.8px;
 }
-
 @utility text-display-md {
-    font-size: 32px;
-    font-weight: 700;
-    line-height: 1.20;
-    letter-spacing: -0.5px;
+    font-size: 32px; font-weight: 700;
+    line-height: 1.20; letter-spacing: -0.5px;
 }
-
 @utility text-headline {
-    font-size: 24px;
-    font-weight: 600;
-    line-height: 1.25;
-    letter-spacing: -0.3px;
+    font-size: 24px; font-weight: 600;
+    line-height: 1.25; letter-spacing: -0.3px;
 }
-
 @utility text-card-title {
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 1.30;
-    letter-spacing: -0.2px;
+    font-size: 20px; font-weight: 600;
+    line-height: 1.30; letter-spacing: -0.2px;
 }
-
 @utility text-subhead {
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 1.45;
-    letter-spacing: -0.1px;
+    font-size: 18px; font-weight: 500;
+    line-height: 1.45; letter-spacing: -0.1px;
 }
-
 @utility text-body-lg {
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 1.65;
-    letter-spacing: 0;
+    font-size: 16px; font-weight: 400;
+    line-height: 1.65; letter-spacing: 0;
 }
-
 @utility text-body-default {
-    font-size: 15px;
-    font-weight: 400;
-    line-height: 1.65;
-    letter-spacing: 0;
+    font-size: 15px; font-weight: 400;
+    line-height: 1.65; letter-spacing: 0;
 }
-
 @utility text-body-sm {
-    font-size: 13px;
-    font-weight: 400;
-    line-height: 1.55;
-    letter-spacing: 0;
+    font-size: 13px; font-weight: 400;
+    line-height: 1.55; letter-spacing: 0;
 }
-
 @utility text-caption {
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 1.45;
-    letter-spacing: 0;
+    font-size: 12px; font-weight: 400;
+    line-height: 1.45; letter-spacing: 0;
 }
-
 @utility text-button-label {
-    font-size: 15px;
-    font-weight: 600;
-    line-height: 1.20;
-    letter-spacing: 0.1px;
+    font-size: 15px; font-weight: 600;
+    line-height: 1.20; letter-spacing: 0.1px;
 }
-
 @utility text-eyebrow {
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1.30;
-    letter-spacing: 0.6px;
-    text-transform: none; /* Sentence case, not uppercase */
+    font-size: 12px; font-weight: 600;
+    line-height: 1.30; letter-spacing: 0.6px;
+    text-transform: none;
 }
-
 @utility text-data {
     font-family: var(--font-mono);
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.50;
-    letter-spacing: 0;
+    font-size: 14px; font-weight: 500;
+    line-height: 1.50; letter-spacing: 0;
 }
-
 @utility text-data-display {
     font-family: var(--font-mono);
-    font-size: 36px;
-    font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -0.5px;
+    font-size: 36px; font-weight: 700;
+    line-height: 1.15; letter-spacing: -0.5px;
+}
+@utility text-data-label {
+    font-size: 11px; font-weight: 600;
+    line-height: 1.30; letter-spacing: 0.8px;
 }
 
-@utility text-data-label {
-    font-size: 11px;
-    font-weight: 600;
-    line-height: 1.30;
-    letter-spacing: 0.8px;
-}
+/* ═══════════════════════════════════════════════════════════
+   BASE STYLES
+═══════════════════════════════════════════════════════════ */
 
 @layer base {
+    *, ::after, ::before, ::backdrop, ::file-selector-button {
+        border-color: var(--color-hairline);
+    }
 
-    *,
-    ::after,
-    ::before,
-    ::backdrop,
-    ::file-selector-button {
-        border-color: var(--color-gray-200, currentColor);
+    html {
+        color-scheme: light;
+    }
+
+    body {
+        background-color: var(--color-canvas);
+        color: var(--color-ink);
+        font-family: var(--font-sans);
+        font-size: 15px;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   FLUX UI COMPONENT OVERRIDES — Light Theme Only
+   Menggunakan multi-selector untuk mencakup semua variasi
+   tag yang dihasilkan Flux UI
+═══════════════════════════════════════════════════════════ */
+
+/* ─── Sidebar Container ──────────────────────────────────── */
+[data-flux-sidebar],
+flux-sidebar,
+ui-sidebar {
+    background-color: var(--color-surface-1) !important;
+    border-right: 1px solid var(--color-hairline) !important;
+    color: var(--color-ink) !important;
+}
+
+/* ─── Sidebar Header ─────────────────────────────────────── */
+[data-flux-sidebar-header],
+flux-sidebar-header,
+ui-sidebar-header {
+    background-color: var(--color-surface-1) !important;
+    border-bottom: 1px solid var(--color-hairline-soft) !important;
+    color: var(--color-ink) !important;
+}
+
+/* ─── Sidebar Brand / Logo Text ──────────────────────────── */
+[data-flux-brand] span,
+[data-flux-sidebar-brand] span {
+    color: var(--color-ink) !important;
+    font-weight: 600 !important;
+    font-size: 15px !important;
+}
+
+/* ─── Sidebar Nav Area ───────────────────────────────────── */
+[data-flux-sidebar-nav],
+flux-sidebar-nav,
+ui-sidebar-nav {
+    background-color: var(--color-surface-1) !important;
+}
+
+/* ─── Sidebar Group Headings (Eyebrow labels) ────────────── */
+[data-flux-sidebar-group-heading],
+flux-sidebar-group-heading,
+ui-sidebar-group-heading {
+    color: var(--color-ink-subtle) !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.6px !important;
+    text-transform: none !important;
+    padding-left: 12px !important;
+    margin-top: 4px !important;
+    margin-bottom: 2px !important;
+}
+
+/* ─── Sidebar Items — default (inactive) ─────────────────── */
+[data-flux-sidebar-item],
+flux-sidebar-item,
+ui-sidebar-item {
+    color: var(--color-ink-muted) !important;
+    font-family: var(--font-sans) !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    border-radius: 10px !important;
+    transition: background-color 150ms ease-out, color 150ms ease-out !important;
+    background-color: transparent !important;
+}
+
+/* ─── Sidebar Items — hover ──────────────────────────────── */
+[data-flux-sidebar-item]:hover:not([data-current]),
+flux-sidebar-item:hover:not([data-current]),
+ui-sidebar-item:hover:not([current]) {
+    background-color: var(--color-surface-2) !important;
+    color: var(--color-ink) !important;
+}
+
+/* ─── Sidebar Items — active/current ────────────────────── */
+[data-flux-sidebar-item][data-current],
+[data-flux-sidebar-item][current],
+flux-sidebar-item[data-current],
+ui-sidebar-item[current] {
+    background-color: var(--color-primary-light) !important;
+    color: var(--color-primary-teal) !important;
+    font-weight: 600 !important;
+}
+
+/* Pastikan ikon dalam active item juga berwarna teal */
+[data-flux-sidebar-item][data-current] svg,
+[data-flux-sidebar-item][current] svg,
+flux-sidebar-item[data-current] svg,
+ui-sidebar-item[current] svg {
+    color: var(--color-primary-teal) !important;
+}
+
+/* ─── Top Header / Navbar ────────────────────────────────── */
+[data-flux-header],
+flux-header,
+ui-header {
+    background-color: var(--color-surface-1) !important;
+    border-bottom: 1px solid var(--color-hairline) !important;
+    color: var(--color-ink) !important;
+}
+
+/* ─── Navbar Items ───────────────────────────────────────── */
+[data-flux-navbar-item],
+flux-navbar-item,
+ui-navbar-item {
+    color: var(--color-ink-muted) !important;
+    font-family: var(--font-sans) !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    transition: color 150ms ease-out !important;
+}
+
+[data-flux-navbar-item][data-current],
+[data-flux-navbar-item][current],
+flux-navbar-item[data-current],
+ui-navbar-item[current] {
+    border-bottom: 2px solid var(--color-primary-teal) !important;
+    color: var(--color-primary-teal) !important;
+    font-weight: 600 !important;
+}
+
+[data-flux-navbar-item]:hover:not([data-current]),
+[data-flux-navbar-item]:hover:not([current]),
+flux-navbar-item:hover:not([data-current]),
+ui-navbar-item:hover:not([current]) {
+    color: var(--color-primary-teal) !important;
+}
+
+/* ─── Dropdown / Menu ────────────────────────────────────── */
+[data-flux-menu],
+flux-menu,
+ui-menu {
+    background-color: var(--color-surface-1) !important;
+    border: 1px solid var(--color-hairline) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08) !important;
+    color: var(--color-ink) !important;
+}
+
+[data-flux-menu-item],
+flux-menu-item,
+ui-menu-item {
+    color: var(--color-ink-muted) !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    border-radius: 8px !important;
+    transition: background-color 150ms ease-out, color 150ms ease-out !important;
+}
+
+[data-flux-menu-item]:hover,
+flux-menu-item:hover,
+ui-menu-item:hover {
+    background-color: var(--color-surface-2) !important;
+    color: var(--color-ink) !important;
+}
+
+[data-flux-menu-separator],
+flux-menu-separator,
+ui-menu-separator {
+    background-color: var(--color-hairline-soft) !important;
+}
+
+/* ─── Profile / Avatar (Flux) ────────────────────────────── */
+[data-flux-profile],
+flux-profile,
+ui-profile {
+    background-color: transparent !important;
+    border: none !important;
+    color: var(--color-ink) !important;
+}
+
+/* ─── Flux Avatar initials ───────────────────────────────── */
+[data-flux-avatar],
+flux-avatar,
+ui-avatar {
+    background-color: var(--color-primary-light) !important;
+    color: var(--color-primary-teal) !important;
+    font-weight: 600 !important;
+}
+
+/* ─── Flux Heading / Text inside menus ───────────────────── */
+[data-flux-heading] {
+    color: var(--color-ink) !important;
+    font-weight: 600 !important;
+}
+
+[data-flux-text] {
+    color: var(--color-ink-muted) !important;
+}
+
+/* ─── Sidebar Toggle (hamburger) ─────────────────────────── */
+[data-flux-sidebar-toggle],
+flux-sidebar-toggle,
+ui-sidebar-toggle {
+    color: var(--color-ink-muted) !important;
+    background-color: transparent !important;
+    border-radius: 8px !important;
+    transition: background-color 150ms ease-out, color 150ms ease-out !important;
+}
+
+[data-flux-sidebar-toggle]:hover,
+flux-sidebar-toggle:hover,
+ui-sidebar-toggle:hover {
+    background-color: var(--color-surface-2) !important;
+    color: var(--color-ink) !important;
+}
+
+/* ─── Main content area ──────────────────────────────────── */
+[data-flux-main],
+flux-main,
+ui-main {
+    background-color: var(--color-canvas) !important;
+}
+
+/* ─── Spacer ─────────────────────────────────────────────── */
+[data-flux-spacer],
+flux-spacer {
+    background-color: transparent !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FLUX FORM CONTROLS
+═══════════════════════════════════════════════════════════ */
 
 [data-flux-field]:not(ui-radio, ui-checkbox) {
     @apply grid gap-2;
 }
 
 [data-flux-label] {
-    @apply  !mb-0 !leading-tight;
+    @apply !mb-0 !leading-tight;
+    color: var(--color-ink) !important;
+    font-weight: 600 !important;
+    font-size: 15px !important;
 }
 
+/* Input focus ring */
 input:focus[data-flux-control],
 textarea:focus[data-flux-control],
 select:focus[data-flux-control] {
-    @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+    outline: none !important;
+    border-color: var(--color-primary-teal) !important;
+    box-shadow: 0 0 0 3px rgba(11, 122, 92, 0.15) !important;
 }
 
-/* --- SiPakar Stunting Custom Theme Overrides for Flux UI --- */
+/* ═══════════════════════════════════════════════════════════
+   GLOBAL FOCUS INDICATOR — Aksesibilitas WCAG
+═══════════════════════════════════════════════════════════ */
 
-body {
+input:focus,
+textarea:focus,
+select:focus,
+button:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--color-primary-teal) !important;
+    outline-offset: 2px !important;
+    box-shadow: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DARK MODE OVERRIDE — Paksa selalu light
+   Menimpa semua rule dark: dari Flux UI
+═══════════════════════════════════════════════════════════ */
+
+.dark body,
+.dark [data-flux-sidebar],
+.dark [data-flux-header],
+.dark [data-flux-menu],
+.dark [data-flux-sidebar-item],
+.dark [data-flux-navbar-item],
+.dark [data-flux-main] {
+    background-color: unset;
+    color: unset;
+    border-color: unset;
+}
+
+/* Re-apply light values even when .dark is present (failsafe) */
+html body,
+html.dark body {
     background-color: var(--color-canvas) !important;
     color: var(--color-ink) !important;
-    font-family: var(--font-sans) !important;
 }
 
-/* Sidebar background & border */
-ui-sidebar, [data-flux-sidebar] {
+html.dark [data-flux-sidebar],
+html.dark flux-sidebar {
     background-color: var(--color-surface-1) !important;
-    border-right: 1px solid var(--color-hairline) !important;
+    border-right-color: var(--color-hairline) !important;
 }
 
-/* Sidebar header boundary */
-ui-sidebar-header, [data-flux-sidebar-header] {
-    border-bottom: 1px solid var(--color-hairline-soft) !important;
-}
-
-/* Header (Top Navigation) background & border */
-ui-header, [data-flux-header] {
+html.dark [data-flux-header],
+html.dark flux-header {
     background-color: var(--color-surface-1) !important;
-    border-bottom: 1px solid var(--color-hairline) !important;
+    border-bottom-color: var(--color-hairline) !important;
 }
 
-/* Sidebar Items: Inactive State */
-ui-sidebar-item, [data-flux-sidebar-item] {
-    color: var(--color-ink-muted) !important;
-    font-family: var(--font-sans) !important;
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    transition: all 0.2s ease-in-out !important;
-}
-
-/* Sidebar Items: Active / Current State */
-ui-sidebar-item[current], [data-flux-sidebar-item][current] {
-    background-color: var(--color-primary-light) !important;
-    color: var(--color-primary-teal) !important;
-    font-weight: 600 !important;
-}
-
-/* Sidebar Items: Hover State */
-ui-sidebar-item:hover:not([current]), [data-flux-sidebar-item]:hover:not([current]) {
-    background-color: var(--color-surface-2) !important;
+html.dark [data-flux-menu],
+html.dark flux-menu {
+    background-color: var(--color-surface-1) !important;
+    border-color: var(--color-hairline) !important;
     color: var(--color-ink) !important;
 }
 
-/* Sidebar Group Headings (Eyebrows) */
-ui-sidebar-group-heading, [data-flux-sidebar-group-heading] {
-    color: var(--color-ink-subtle) !important;
-    font-size: 11px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.8px !important;
-    text-transform: none !important; /* Sentence case as mandated in DESIGN.md */
-}
-
-/* Navbar / Top navigation items */
-ui-navbar-item, [data-flux-navbar-item] {
+html.dark [data-flux-sidebar-item],
+html.dark flux-sidebar-item {
     color: var(--color-ink-muted) !important;
-    font-family: var(--font-sans) !important;
-    font-size: 15px !important;
-    transition: all 0.2s ease-in-out !important;
+    background-color: transparent !important;
 }
 
-ui-navbar-item[current], [data-flux-navbar-item][current] {
-    border-bottom: 2px solid var(--color-primary-teal) !important;
-    color: var(--color-primary-teal) !important;
-    font-weight: 600 !important;
-}
-
-ui-navbar-item:hover:not([current]), [data-flux-navbar-item]:hover:not([current]) {
+html.dark [data-flux-sidebar-item][data-current],
+html.dark [data-flux-sidebar-item][current] {
+    background-color: var(--color-primary-light) !important;
     color: var(--color-primary-teal) !important;
 }
 
-/* Focus Indicator Ring for Accessibility */
-input:focus, textarea:focus, select:focus, button:focus, [data-flux-control]:focus {
-    outline: none !important;
-    box-shadow: 0 0 0 2px var(--color-canvas), 0 0 0 4px var(--color-primary-teal) !important;
+html.dark [data-flux-sidebar-group-heading],
+html.dark flux-sidebar-group-heading {
+    color: var(--color-ink-subtle) !important;
+}
+
+html.dark [data-flux-main],
+html.dark flux-main {
+    background-color: var(--color-canvas) !important;
 }
