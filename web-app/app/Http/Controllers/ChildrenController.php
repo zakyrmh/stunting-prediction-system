@@ -44,7 +44,7 @@ class ChildrenController extends Controller
     public function create(): View
     {
         $user = auth()->user();
-        abort_unless($user->isBidan() || $user->isKader(), 403);
+        abort_unless($user->isKader(), 403);
 
         $formData = $this->childrenService->getFormData($user);
 

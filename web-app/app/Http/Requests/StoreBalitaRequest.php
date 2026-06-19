@@ -13,7 +13,7 @@ class StoreBalitaRequest extends FormRequest
     public function authorize(): bool
     {
         $user = auth()->user();
-        return $user && ($user->isBidan() || $user->isKader());
+        return $user && $user->isKader();
     }
 
     /**

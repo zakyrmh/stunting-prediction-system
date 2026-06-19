@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserIndexRequest;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Services\UserService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -48,6 +50,37 @@ class UserController extends Controller
         return redirect()
             ->route('users.index')
             ->with('success', 'Akun kader berhasil dibuat.');
+    }
+
+    /**
+     * Return kader data as JSON to populate the edit modal.
+     */
+    public function edit(User $user): JsonResponse
+    {
+        abort_unless(auth()->user()->isBidan(), 403);
+        abort_unless($user->isKader(), 403, 'Hanya akun kader yang dapat diedit di sini.');
+
+        return response()->json([
+            'id'          => $user->id,
+            'name'        => $user->name,
+            'email'       => $user->email,
+            'phone'       => $user->phone,
+            'posyandu_id' => $user->posyandu_id,
+        ]);
+    }
+
+    /**
+     * Update an existing kader account.
+     */
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
+    {
+        abort_unless($user->isKader(), 403, 'Hanya akun kader yang dapat diedit di sini.');
+
+        $this->userService->updateKader($user, $request->validated());
+
+        return redirect()
+            ->route('users.index')
+            ->with('success', "Akun {$user->name} berhasil diperbarui.");
     }
 
     /**

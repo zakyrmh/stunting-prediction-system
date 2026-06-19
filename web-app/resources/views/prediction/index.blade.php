@@ -7,9 +7,11 @@
                 <flux:heading size="xl" class="font-bold text-ink">Riwayat Pengukuran & Log AI</flux:heading>
                 <flux:text class="mt-1 text-ink-muted">Pantau data historis antropometri, tingkat akurasi diagnosis klasifikasi model AI, dan status verifikasi klinis secara kolektif.</flux:text>
             </div>
-            <flux:button icon="plus" variant="primary" :href="route('prediksi.form')" class="cursor-pointer">
-                Mulai Pengukuran Baru
-            </flux:button>
+            @if(auth()->user()->isKader())
+                <flux:button icon="plus" variant="primary" :href="route('prediksi.form')" class="cursor-pointer">
+                    Mulai Pengukuran Baru
+                </flux:button>
+            @endif
         </div>
 
         <!-- ================== 1. PANEL ATAS: FILTER KOLEKTIF & UTILITAS EKSPOR ================== -->

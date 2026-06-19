@@ -206,6 +206,20 @@
                                 <td class="px-5 py-3.5">
                                     <div class="flex items-center justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
 
+                                        {{-- Edit --}}
+                                        <button
+                                            type="button"
+                                            title="Edit akun kader"
+                                            data-edit-url="{{ route('users.edit', $kader) }}"
+                                            data-update-url="{{ route('users.update', $kader) }}"
+                                            data-kader-name="{{ $kader->name }}"
+                                            onclick="openEditModal(this)"
+                                            class="h-8 w-8 flex items-center justify-center rounded-lg border border-info/30 bg-info-surface text-info hover:bg-info/15 transition-all cursor-pointer">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                        </button>
+
                                         {{-- Toggle Status --}}
                                         <form method="POST" action="{{ route('users.toggle-active', $kader) }}" id="form-toggle-{{ $kader->id }}">
                                             @csrf
@@ -459,6 +473,188 @@
         </div>
     </div>
 
+    {{-- ═══════════════════════════════════════════════════════════════════ --}}
+    {{-- Modal: Edit Akun Kader                                            --}}
+    {{-- ═══════════════════════════════════════════════════════════════════ --}}
+
+    {{-- Backdrop Edit (shared with tambah backdrop logic) --}}
+    <div id="modal-edit-backdrop"
+        onclick="closeEditModal()"
+        class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity">
+    </div>
+
+    {{-- Modal Edit Panel --}}
+    <div id="modal-edit-kader"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="bg-surface-1 border border-hairline rounded-2xl shadow-2xl w-full max-w-lg flex flex-col max-h-[90vh] overflow-y-auto">
+
+            {{-- Modal Header --}}
+            <div class="flex items-center justify-between p-6 border-b border-hairline">
+                <div>
+                    <h2 class="text-headline font-bold text-ink">Edit Akun Kader</h2>
+                    <p class="text-xs text-ink-subtle mt-0.5" id="edit-modal-subtitle">Perbarui informasi akun kader.</p>
+                </div>
+                <button onclick="closeEditModal()" class="h-8 w-8 rounded-lg text-ink-subtle hover:bg-canvas hover:text-ink flex items-center justify-center transition-colors cursor-pointer text-xl leading-none">✕</button>
+            </div>
+
+            {{-- Loading State --}}
+            <div id="edit-modal-loading" class="flex items-center justify-center py-16 hidden">
+                <div class="flex flex-col items-center gap-3 text-ink-subtle">
+                    <svg class="animate-spin h-8 w-8 text-primary-teal" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                    <span class="text-sm">Memuat data kader...</span>
+                </div>
+            </div>
+
+            {{-- Modal Body: Form Edit --}}
+            <form method="POST" id="form-edit-kader" class="p-6 flex flex-col gap-5">
+                @csrf
+                @method('PUT')
+                {{-- action diisi dinamis oleh JS --}}
+
+                {{-- Validation Errors dari update --}}
+                @if($errors->updateKader->any())
+                    <div class="bg-risk-high-surface border border-risk-high/30 rounded-lg p-3 text-risk-high text-sm">
+                        <p class="font-semibold mb-1">Terdapat kesalahan input:</p>
+                        <ul class="list-disc list-inside space-y-0.5 text-xs">
+                            @foreach($errors->updateKader->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                {{-- Nama Lengkap --}}
+                <div class="flex flex-col gap-1.5">
+                    <label for="edit-name" class="text-sm font-semibold text-ink">Nama Lengkap <span class="text-risk-high">*</span></label>
+                    <input
+                        type="text"
+                        name="name"
+                        id="edit-name"
+                        placeholder="Contoh: Siti Rahayu"
+                        required
+                        value="{{ old('name') }}"
+                        class="text-sm bg-canvas border {{ $errors->updateKader->has('name') ? 'border-risk-high' : 'border-hairline' }} rounded-lg text-ink px-3 py-2.5 placeholder:text-ink-subtle focus:outline-none focus:ring-2 focus:ring-primary-teal/40 w-full"
+                    />
+                    @if($errors->updateKader->has('name'))
+                        <p class="text-xs text-risk-high mt-1">{{ $errors->updateKader->first('name') }}</p>
+                    @endif
+                </div>
+
+                {{-- Email --}}
+                <div class="flex flex-col gap-1.5">
+                    <label for="edit-email" class="text-sm font-semibold text-ink">Alamat Email <span class="text-risk-high">*</span></label>
+                    <input
+                        type="email"
+                        name="email"
+                        id="edit-email"
+                        placeholder="kader@example.com"
+                        required
+                        value="{{ old('email') }}"
+                        class="text-sm bg-canvas border {{ $errors->updateKader->has('email') ? 'border-risk-high' : 'border-hairline' }} rounded-lg text-ink px-3 py-2.5 placeholder:text-ink-subtle focus:outline-none focus:ring-2 focus:ring-primary-teal/40 w-full"
+                    />
+                    @if($errors->updateKader->has('email'))
+                        <p class="text-xs text-risk-high mt-1">{{ $errors->updateKader->first('email') }}</p>
+                    @endif
+                </div>
+
+                {{-- Nomor HP --}}
+                <div class="flex flex-col gap-1.5">
+                    <label for="edit-phone" class="text-sm font-semibold text-ink">Nomor HP/WA <span class="text-ink-subtle font-normal">(opsional)</span></label>
+                    <input
+                        type="tel"
+                        name="phone"
+                        id="edit-phone"
+                        placeholder="08xxxxxxxxxx"
+                        value="{{ old('phone') }}"
+                        class="text-sm bg-canvas border {{ $errors->updateKader->has('phone') ? 'border-risk-high' : 'border-hairline' }} rounded-lg text-ink px-3 py-2.5 placeholder:text-ink-subtle focus:outline-none focus:ring-2 focus:ring-primary-teal/40 w-full"
+                    />
+                    @if($errors->updateKader->has('phone'))
+                        <p class="text-xs text-risk-high mt-1">{{ $errors->updateKader->first('phone') }}</p>
+                    @endif
+                </div>
+
+                {{-- Posyandu --}}
+                <div class="flex flex-col gap-1.5">
+                    <label for="edit-posyandu" class="text-sm font-semibold text-ink">Posyandu <span class="text-risk-high">*</span></label>
+                    <select
+                        name="posyandu_id"
+                        id="edit-posyandu"
+                        required
+                        class="text-sm bg-canvas border {{ $errors->updateKader->has('posyandu_id') ? 'border-risk-high' : 'border-hairline' }} rounded-lg text-ink px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-teal/40 w-full cursor-pointer">
+                        <option value="">— Pilih Posyandu —</option>
+                        @foreach($posyandus as $p)
+                            <option value="{{ $p->id }}" {{ old('posyandu_id') == $p->id ? 'selected' : '' }}>
+                                {{ $p->name }} – {{ $p->village }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @if($errors->updateKader->has('posyandu_id'))
+                        <p class="text-xs text-risk-high mt-1">{{ $errors->updateKader->first('posyandu_id') }}</p>
+                    @endif
+                </div>
+
+                {{-- Password Baru (Opsional) --}}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="flex flex-col gap-1.5">
+                        <label for="edit-password" class="text-sm font-semibold text-ink">
+                            Kata Sandi Baru
+                            <span class="text-ink-subtle font-normal">(opsional)</span>
+                        </label>
+                        <input
+                            type="password"
+                            name="password"
+                            id="edit-password"
+                            placeholder="Kosongkan jika tidak diubah"
+                            minlength="8"
+                            class="text-sm bg-canvas border {{ $errors->updateKader->has('password') ? 'border-risk-high' : 'border-hairline' }} rounded-lg text-ink px-3 py-2.5 placeholder:text-ink-subtle focus:outline-none focus:ring-2 focus:ring-primary-teal/40 w-full"
+                        />
+                        @if($errors->updateKader->has('password'))
+                            <p class="text-xs text-risk-high mt-1">{{ $errors->updateKader->first('password') }}</p>
+                        @endif
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label for="edit-password-confirm" class="text-sm font-semibold text-ink">Konfirmasi Sandi</label>
+                        <input
+                            type="password"
+                            name="password_confirmation"
+                            id="edit-password-confirm"
+                            placeholder="Ulangi kata sandi baru"
+                            class="text-sm bg-canvas border border-hairline rounded-lg text-ink px-3 py-2.5 placeholder:text-ink-subtle focus:outline-none focus:ring-2 focus:ring-primary-teal/40 w-full"
+                        />
+                    </div>
+                </div>
+
+                {{-- Info Note --}}
+                <div class="bg-info-surface border border-info/20 rounded-lg p-3 text-xs text-ink-muted leading-relaxed">
+                    <strong class="text-info">Catatan:</strong>
+                    Biarkan kolom kata sandi kosong jika tidak ingin mengubah password kader ini.
+                </div>
+
+                {{-- Actions --}}
+                <div class="flex items-center justify-end gap-3 pt-2 border-t border-hairline">
+                    <button
+                        type="button"
+                        onclick="closeEditModal()"
+                        class="text-sm text-ink-muted hover:text-ink border border-hairline rounded-lg px-4 py-2 hover:bg-canvas transition-colors cursor-pointer">
+                        Batal
+                    </button>
+                    <button
+                        type="submit"
+                        class="inline-flex items-center gap-2 text-sm font-semibold bg-primary-teal text-white px-5 py-2 rounded-lg hover:bg-primary-teal/90 transition-all cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
     {{-- Script: close modal & auto-open jika ada errors --}}
     <script>
         function closeModal() {
@@ -466,17 +662,94 @@
             document.getElementById('modal-backdrop').classList.add('hidden');
         }
 
-        // Auto-buka modal jika ada validation error dari form tambah kader
-        @if($errors->any())
+        function closeEditModal() {
+            document.getElementById('modal-edit-kader').classList.add('hidden');
+            document.getElementById('modal-edit-backdrop').classList.add('hidden');
+        }
+
+        /**
+         * Buka modal edit, fetch data kader via AJAX, lalu populate form.
+         * @param {HTMLElement} btn — tombol edit yang diklik (mengandung data-* attributes)
+         */
+        async function openEditModal(btn) {
+            const editUrl   = btn.dataset.editUrl;
+            const updateUrl = btn.dataset.updateUrl;
+            const kaderName = btn.dataset.kaderName;
+
+            // Tampilkan modal dan backdrop
+            document.getElementById('modal-edit-kader').classList.remove('hidden');
+            document.getElementById('modal-edit-backdrop').classList.remove('hidden');
+
+            // Tampilkan loading, sembunyikan form
+            document.getElementById('edit-modal-loading').classList.remove('hidden');
+            document.getElementById('form-edit-kader').classList.add('hidden');
+            document.getElementById('edit-modal-subtitle').textContent = 'Memuat data ' + kaderName + '...';
+
+            try {
+                const response = await fetch(editUrl, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    }
+                });
+
+                if (!response.ok) throw new Error('Gagal memuat data kader.');
+
+                const data = await response.json();
+
+                // Set action form ke URL update kader
+                document.getElementById('form-edit-kader').action = updateUrl;
+
+                // Populate form fields
+                document.getElementById('edit-name').value     = data.name    ?? '';
+                document.getElementById('edit-email').value    = data.email   ?? '';
+                document.getElementById('edit-phone').value    = data.phone   ?? '';
+                document.getElementById('edit-posyandu').value = data.posyandu_id ?? '';
+
+                // Reset password fields
+                document.getElementById('edit-password').value         = '';
+                document.getElementById('edit-password-confirm').value = '';
+
+                // Update subtitle
+                document.getElementById('edit-modal-subtitle').textContent =
+                    'Perbarui informasi akun ' + data.name;
+
+            } catch (err) {
+                alert('Terjadi kesalahan: ' + err.message);
+                closeEditModal();
+                return;
+            } finally {
+                // Sembunyikan loading, tampilkan form
+                document.getElementById('edit-modal-loading').classList.add('hidden');
+                document.getElementById('form-edit-kader').classList.remove('hidden');
+            }
+        }
+
+        // Auto-buka modal tambah kader jika ada validation error dari form store
+        @if($errors->any() && !$errors->updateKader->any())
             document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('modal-tambah-kader').classList.remove('hidden');
                 document.getElementById('modal-backdrop').classList.remove('hidden');
             });
         @endif
 
-        // Escape key closes modal
+        // Auto-buka modal edit jika ada validation error dari form update
+        @if($errors->updateKader->any())
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('modal-edit-kader').classList.remove('hidden');
+                document.getElementById('modal-edit-backdrop').classList.remove('hidden');
+                document.getElementById('edit-modal-loading').classList.add('hidden');
+                document.getElementById('form-edit-kader').classList.remove('hidden');
+                document.getElementById('edit-modal-subtitle').textContent = 'Perbaiki kesalahan input di bawah ini.';
+            });
+        @endif
+
+        // Escape key menutup modal yang aktif
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape') {
+                closeModal();
+                closeEditModal();
+            }
         });
     </script>
 

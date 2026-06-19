@@ -99,4 +99,26 @@ class UserService
     {
         $user->delete();
     }
+
+    /**
+     * Update an existing kader account.
+     * Password is only updated when explicitly provided (not null/empty).
+     */
+    public function updateKader(User $user, array $data): User
+    {
+        $payload = [
+            'name'        => $data['name'],
+            'email'       => $data['email'],
+            'phone'       => $data['phone'] ?? null,
+            'posyandu_id' => $data['posyandu_id'],
+        ];
+
+        if (!empty($data['password'])) {
+            $payload['password'] = Hash::make($data['password']);
+        }
+
+        $user->update($payload);
+
+        return $user->fresh();
+    }
 }

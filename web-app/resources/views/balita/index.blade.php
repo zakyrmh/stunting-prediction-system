@@ -9,9 +9,6 @@
                     <flux:text class="mt-1 text-ink-muted">Kelola data induk balita, monitoring perkembangan runtun waktu (time-series), dan verifikasi diagnosis hybrid AI.</flux:text>
                 </div>
                 <div class="flex gap-2">
-                    <flux:button icon="plus" variant="primary" :href="route('balita.form')" class="cursor-pointer">
-                        Tambah Balita
-                    </flux:button>
                     <flux:button icon="arrow-down-tray" variant="filled" class="cursor-pointer">
                         Ekspor Excel / PDF
                     </flux:button>

@@ -25,7 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Prediksi
     Route::get('/prediksi', [PredictionController::class, 'index'])->name('prediksi.index');
-    Volt::route('/prediksi/tambah', 'prediction.form')->name('prediksi.form');
+    Volt::route('/prediksi/tambah', 'prediction.form')->name('prediksi.form')->middleware('kader');
     Volt::route('/prediksi/{prediction}', 'prediction.show')->name('prediksi.show');
 
     // Bidan only
@@ -36,6 +36,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
+        Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::patch('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggle-active');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     });
