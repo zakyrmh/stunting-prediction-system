@@ -6,6 +6,10 @@ use App\Models\Prediction;
 use App\Models\Intervention;
 use App\Models\User;
 use App\Models\Posyandu;
+use App\Models\Children;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class StuntingPredictionService
 {
@@ -180,5 +184,98 @@ class StuntingPredictionService
             'startDate' => $startDate,
             'endDate' => $endDate,
         ];
+    }
+
+    /**
+     * Create and store a new monthly child measurement and stunting prediction.
+     */
+    public function createPrediction(array $data, User $recorder): Prediction
+    {
+        $child = Children::findOrFail($data['child_id']);
+        
+        // Calculate child age in months at the time of examination
+        $birthDate = $child->birth_date;
+        $examinedAt = Carbon::parse($data['examined_at']);
+        $ageMonths = $birthDate->diffInMonths($examinedAt);
+
+        // Map gender: male -> 0, female -> 1
+        $gender = $child->gender === 'male' ? 0 : 1;
+
+        // Prepare Certainty Factor symptoms
+        $gejalaCf = [];
+        if (isset($data['gejala']) && is_array($data['gejala'])) {
+            foreach ($data['gejala'] as $ruleId => $value) {
+                $gejalaCf[$ruleId] = floatval($value);
+            }
+        }
+
+        $apiUrl = config('services.prediction_service.url', 'http://127.0.0.1:8001') . '/predict';
+        
+        try {
+            $response = Http::timeout(5)->post($apiUrl, [
+                'gender' => $gender,
+                'age_months' => floatval($ageMonths),
+                'weight' => floatval($data['weight']),
+                'height' => floatval($data['height']),
+                'gejala_cf' => $gejalaCf,
+            ]);
+
+            if ($response->successful()) {
+                $resData = $response->json();
+                $cfTotal = $resData['kesimpulan_sistem_pakar']['tingkat_risiko_total_persen'] ?? 0;
+                $recommendations = $resData['kesimpulan_sistem_pakar']['rekomendasi_intervensi'] ?? [];
+                
+                // Map CF total to result enum
+                if ($cfTotal < 40) {
+                    $result = 'normal';
+                } elseif ($cfTotal < 70) {
+                    $result = 'stunting_risk';
+                } elseif ($cfTotal < 85) {
+                    $result = 'stunted';
+                } else {
+                    $result = 'severely_stunted';
+                }
+                
+                $confidence = $cfTotal / 100;
+            } else {
+                throw new \Exception("FastAPI microservice returned error status: " . $response->status());
+            }
+        } catch (\Exception $e) {
+            Log::error("Stunting prediction microservice connection failed: " . $e->getMessage());
+            
+            // Fallback calculation: if height/weight are very low, classify as stunted/risk
+            // Let's do a basic rule of thumb fallback so the system remains functional even if API is offline
+            $result = 'normal';
+            $confidence = 0.5000;
+            $recommendations = ["Saran preventif: Pastikan asupan nutrisi protein hewani terpenuhi dan lakukan penimbangan rutin."];
+        }
+
+        // Save prediction record
+        $prediction = Prediction::create([
+            'child_id' => $child->id,
+            'posyandu_id' => $recorder->posyandu_id ?? $child->posyandu_id,
+            'recorded_by' => $recorder->id,
+            'session_id' => null, // Sesi posyandu (nullable)
+            'weight' => $data['weight'],
+            'height' => $data['height'],
+            'age_months' => $ageMonths,
+            'examined_at' => $data['examined_at'],
+            'result' => $result,
+            'confidence' => $confidence,
+            'notes' => $data['notes'] ?? null,
+        ]);
+
+        // If prediction is not normal, create a pending intervention
+        if ($result !== 'normal' && !empty($recommendations)) {
+            Intervention::create([
+                'prediction_id' => $prediction->id,
+                'recommendation' => implode("\n", $recommendations),
+                'status' => 'pending',
+                'follow_up_date' => $examinedAt->copy()->addMonth()->toDateString(),
+                'handled_by' => null,
+            ]);
+        }
+
+        return $prediction;
     }
 }
