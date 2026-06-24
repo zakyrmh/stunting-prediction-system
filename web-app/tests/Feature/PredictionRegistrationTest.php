@@ -24,6 +24,27 @@ test('kader can access create prediction page', function () {
 });
 
 test('kader can submit monthly prediction form successfully', function () {
+    // Fake the HTTP request to the FastAPI microservice
+    \Illuminate\Support\Facades\Http::fake([
+        '*' => \Illuminate\Support\Facades\Http::response([
+            'status_kode' => 200,
+            'pesan' => 'Analisis sistem pakar hybrid berhasil',
+            'kalkulasi_fisik' => [
+                'bmi' => 17.06,
+                'status_skrining_ml' => 'Stunting',
+                'probabilitas_ml_murni' => 75.0
+            ],
+            'kesimpulan_sistem_pakar' => [
+                'tingkat_risiko_total_persen' => 75.0,
+                'gejala_terdeteksi' => ['R04', 'R07'],
+                'rekomendasi_intervensi' => [
+                    'Terapkan Feeding Rules',
+                    'Berikan MPASI padat energi'
+                ]
+            ]
+        ], 200)
+    ]);
+
     $posyandu = Posyandu::factory()->create();
     $kader = User::factory()->create([
         'role' => 'kader',
@@ -59,3 +80,4 @@ test('kader can submit monthly prediction form successfully', function () {
         'status' => 'pending',
     ]);
 });
+
