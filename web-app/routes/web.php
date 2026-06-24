@@ -20,6 +20,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/balita', [ChildrenController::class, 'index'])->name('balita.index');
     Route::get('/balita/tambah', [ChildrenController::class, 'create'])->name('balita.form');
     Route::post('/balita/tambah', [ChildrenController::class, 'store'])->name('balita.store');
+    Route::get('/balita/{child}/edit', [ChildrenController::class, 'edit'])->name('balita.edit');
+    Route::put('/balita/{child}', [ChildrenController::class, 'update'])->name('balita.update');
     Route::post('/balita/override/{child}', [ChildrenController::class, 'overrideStatus'])->name('balita.override-status');
     Volt::route('/balita/{balita}', 'balita.show')->name('balita.show');
 

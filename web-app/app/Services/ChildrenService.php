@@ -318,4 +318,25 @@ class ChildrenService
             'user_id'     => $data['user_id'] ?? null,
         ]);
     }
+
+    /**
+     * Update an existing Children (balita) record.
+     */
+    public function updateBalita(int $id, array $data): Children
+    {
+        $child = Children::findOrFail($id);
+        
+        $child->update([
+            'name'        => $data['name'],
+            'nik'         => $data['nik'] ?? null,
+            'birth_date'  => $data['birth_date'],
+            'birth_place' => $data['birth_place'],
+            'gender'      => $data['gender'],
+            'address'     => $data['address'],
+            'posyandu_id' => $data['posyandu_id'],
+            'user_id'     => $data['user_id'] ?? null,
+        ]);
+
+        return $child;
+    }
 }

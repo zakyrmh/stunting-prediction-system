@@ -1,4 +1,4 @@
-<x-layouts::app :title="__('Pendaftaran Balita Baru')">
+<x-layouts::app :title="isset($child) ? __('Edit Data Balita') : __('Pendaftaran Balita Baru')">
     <div class="min-h-screen bg-canvas font-sans">
 
         {{-- ── Breadcrumb ──────────────────────────────────────────────────── --}}
@@ -10,7 +10,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-ink-subtle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                 </svg>
-                <span class="text-ink font-semibold">Pendaftaran Balita Baru</span>
+                <span class="text-ink font-semibold">{{ isset($child) ? 'Edit Data Balita' : 'Pendaftaran Balita Baru' }}</span>
             </nav>
         </div>
 
@@ -20,14 +20,13 @@
             {{-- ── Page Header ─────────────────────────────────────────────── --}}
             <div class="mb-8">
                 <p class="text-xs font-semibold text-primary-teal uppercase tracking-widest mb-2">
-                    registrasi & input
+                    {{ isset($child) ? 'perbarui data' : 'registrasi & input' }}
                 </p>
                 <h1 class="text-3xl font-bold text-ink tracking-tight leading-tight">
-                    Pendaftaran Balita Baru
+                    {{ isset($child) ? 'Edit Data Balita' : 'Pendaftaran Balita Baru' }}
                 </h1>
                 <p class="mt-2 text-base text-ink-muted leading-relaxed">
-                    Daftarkan data balita ke sistem posyandu. Data ini akan menjadi rekam medis
-                    awal untuk memantau tumbuh kembang dan mendeteksi risiko stunting.
+                    {{ isset($child) ? 'Perbarui informasi data diri balita terdaftar.' : 'Daftarkan data balita ke sistem posyandu. Data ini akan menjadi rekam medis awal untuk memantau tumbuh kembang dan mendeteksi risiko stunting.' }}
                 </p>
             </div>
 
@@ -57,11 +56,14 @@
             {{-- ════════════════════════════════════════════════════════════════ --}}
             <form
                 method="POST"
-                action="{{ route('balita.store') }}"
+                action="{{ isset($child) ? route('balita.update', $child->id) : route('balita.store') }}"
                 id="form-daftar-balita"
                 novalidate
             >
                 @csrf
+                @if(isset($child))
+                    @method('PUT')
+                @endif
 
                 {{-- ──────────────────────────────────────────────────────────── --}}
                 {{-- Section 1 · Identitas Anak                                  --}}
@@ -90,7 +92,7 @@
                             type="text"
                             name="name"
                             id="input-name"
-                            value="{{ old('name') }}"
+                            value="{{ old('name', isset($child) ? $child->name : '') }}"
                             placeholder="Contoh: Budi Santoso"
                             required
                             autocomplete="name"
@@ -119,7 +121,7 @@
                             type="text"
                             name="nik"
                             id="input-nik"
-                            value="{{ old('nik') }}"
+                            value="{{ old('nik', isset($child) ? $child->nik : '') }}"
                             placeholder="16 digit angka"
                             maxlength="16"
                             inputmode="numeric"
@@ -152,14 +154,14 @@
                                     for="gender-male"
                                     id="label-gender-male"
                                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl border-2 cursor-pointer transition-all min-h-[56px]
-                                        {{ old('gender') === 'male' ? 'border-primary-teal bg-primary-light' : 'border-hairline bg-canvas hover:border-primary-teal/50' }}"
+                                        {{ old('gender', isset($child) ? $child->gender : '') === 'male' ? 'border-primary-teal bg-primary-light' : 'border-hairline bg-canvas hover:border-primary-teal/50' }}"
                                 >
                                     <input
                                         type="radio"
                                         name="gender"
                                         id="gender-male"
                                         value="male"
-                                        {{ old('gender') === 'male' ? 'checked' : '' }}
+                                        {{ old('gender', isset($child) ? $child->gender : '') === 'male' ? 'checked' : '' }}
                                         class="sr-only"
                                         onchange="updateGenderCard()"
                                     />
@@ -172,14 +174,14 @@
                                     for="gender-female"
                                     id="label-gender-female"
                                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl border-2 cursor-pointer transition-all min-h-[56px]
-                                        {{ old('gender') === 'female' ? 'border-primary-teal bg-primary-light' : 'border-hairline bg-canvas hover:border-primary-teal/50' }}"
+                                        {{ old('gender', isset($child) ? $child->gender : '') === 'female' ? 'border-primary-teal bg-primary-light' : 'border-hairline bg-canvas hover:border-primary-teal/50' }}"
                                 >
                                     <input
                                         type="radio"
                                         name="gender"
                                         id="gender-female"
                                         value="female"
-                                        {{ old('gender') === 'female' ? 'checked' : '' }}
+                                        {{ old('gender', isset($child) ? $child->gender : '') === 'female' ? 'checked' : '' }}
                                         class="sr-only"
                                         onchange="updateGenderCard()"
                                     />
@@ -209,7 +211,7 @@
                                 type="date"
                                 name="birth_date"
                                 id="input-birth-date"
-                                value="{{ old('birth_date') }}"
+                                value="{{ old('birth_date', isset($child) && $child->birth_date ? $child->birth_date->toDateString() : '') }}"
                                 required
                                 max="{{ now()->subDay()->toDateString() }}"
                                 min="{{ now()->subYears(6)->toDateString() }}"
@@ -237,7 +239,7 @@
                                 type="text"
                                 name="birth_place"
                                 id="input-birth-place"
-                                value="{{ old('birth_place') }}"
+                                value="{{ old('birth_place', isset($child) ? $child->birth_place : '') }}"
                                 placeholder="Contoh: Bogor"
                                 required
                                 autocomplete="off"
@@ -291,7 +293,7 @@
                                 focus:outline-none focus:ring-2 focus:ring-primary-teal focus:ring-offset-0
                                 {{ $errors->has('address') ? 'border-red-400 bg-red-50' : 'border-hairline focus:border-primary-teal' }}"
                             aria-describedby="{{ $errors->has('address') ? 'error-address' : null }}"
-                        >{{ old('address') }}</textarea>
+                        >{{ old('address', isset($child) ? $child->address : '') }}</textarea>
                         @error('address')
                             <p id="error-address" role="alert" class="flex items-center gap-1.5 text-xs text-red-600 mt-0.5">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
@@ -323,7 +325,7 @@
                                 <option value="">— Pilih Posyandu —</option>
                                 @foreach($posyandus as $p)
                                     <option value="{{ $p->id }}"
-                                        {{ old('posyandu_id') == $p->id ? 'selected' : '' }}>
+                                        {{ old('posyandu_id', isset($child) ? $child->posyandu_id : '') == $p->id ? 'selected' : '' }}>
                                         {{ $p->name }}{{ $p->village ? ' – ' . $p->village : '' }}
                                     </option>
                                 @endforeach
@@ -398,7 +400,7 @@
                                 <option value="">— Tidak dihubungkan —</option>
                                 @foreach($orangTuaList as $ortu)
                                     <option value="{{ $ortu->id }}"
-                                        {{ old('user_id') == $ortu->id ? 'selected' : '' }}>
+                                        {{ old('user_id', isset($child) ? $child->user_id : '') == $ortu->id ? 'selected' : '' }}>
                                         {{ $ortu->name }} ({{ $ortu->email }})
                                     </option>
                                 @endforeach
@@ -441,15 +443,22 @@
                         class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[10px] bg-primary-teal text-white text-sm font-semibold transition-colors
                             hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-teal focus:ring-offset-2 min-h-[48px]"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
-                        </svg>
-                        Daftarkan Balita
+                        @if(isset($child))
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            Simpan Perubahan
+                        @else
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                            </svg>
+                            Daftarkan Balita
+                        @endif
                     </button>
 
                     {{-- Secondary: Batal --}}
                     <a
-                        href="{{ route('balita.index') }}"
+                        href="{{ isset($child) ? route('balita.show', $child->id) : route('balita.index') }}"
                         class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[10px] border border-primary-teal text-primary-teal text-sm font-semibold bg-white transition-colors
                             hover:bg-primary-light focus:outline-none focus:ring-2 focus:ring-primary-teal focus:ring-offset-2 min-h-[48px]"
                     >

@@ -6,6 +6,7 @@ use App\Http\Requests\ChildrenIndexRequest;
 use App\Http\Requests\ChildrenOverrideRequest;
 use App\Http\Requests\StoreBalitaRequest;
 use App\Services\ChildrenService;
+use App\Models\Children;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -83,5 +84,46 @@ class ChildrenController extends Controller
             'filterPosyandu'  => $validated['filterPosyandu'] ?? null,
             'filterStatus'    => $validated['filterStatus'] ?? null,
         ])->with('success', "Status gizi balita berhasil diverifikasi & diperbarui.");
+    }
+
+    /**
+     * Render the form to edit an existing balita (child).
+     */
+    public function edit($id): View
+    {
+        $user = auth()->user();
+        abort_unless($user->isKader(), 403);
+
+        $child = Children::findOrFail($id);
+        $formData = $this->childrenService->getFormData($user);
+        $formData['child'] = $child;
+
+        return view('balita.form', $formData);
+    }
+
+    /**
+     * Update an existing balita and redirect to their detail page.
+     */
+    public function update(\Illuminate\Http\Request $request, $id): RedirectResponse
+    {
+        $user = auth()->user();
+        abort_unless($user->isKader(), 403);
+
+        $validated = $request->validate([
+            'name'        => ['required', 'string', 'max:255'],
+            'nik'         => ['nullable', 'string', 'size:16', 'unique:children,nik,' . $id],
+            'birth_date'  => ['required', 'date', 'before:today', 'after:' . now()->subYears(6)->toDateString()],
+            'birth_place' => ['required', 'string', 'max:100'],
+            'gender'      => ['required', 'in:male,female'],
+            'address'     => ['required', 'string', 'max:1000'],
+            'posyandu_id' => ['required', 'integer', 'exists:posyandus,id'],
+            'user_id'     => ['nullable', 'integer', 'exists:users,id'],
+        ]);
+
+        $child = $this->childrenService->updateBalita($id, $validated);
+
+        return redirect()
+            ->route('balita.show', $child->id)
+            ->with('success', "Data balita \"{$child->name}\" berhasil diperbarui.");
     }
 }
