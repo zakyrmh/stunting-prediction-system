@@ -8,7 +8,14 @@ new class extends Component {
 
     public function mount(Children $balita): void
     {
-        $this->balita = $balita->load('posyandu');
+        $this->balita = $balita->load([
+            'posyandu',
+            'predictions' => function ($query) {
+                $query->latest('examined_at')->latest('id');
+            },
+            'predictions.recorder',
+            'predictions.intervention'
+        ]);
     }
 };
 ?>
@@ -85,11 +92,72 @@ new class extends Component {
                 </flux:button>
             </div>
 
-            <flux:text class="py-4">
-                Riwayat prediksi belum dapat ditampilkan karena tabel <code>predictions</code> saat ini belum
-                menyimpan relasi ke <code>balitas</code>. Halaman detail balita tetap bisa diakses, tetapi fitur
-                riwayat per balita perlu penyelarasan migration dan model terlebih dahulu.
-            </flux:text>
+            @if($balita->predictions->isEmpty())
+                <flux:text class="py-4 block text-center text-ink-subtle">
+                    Belum ada riwayat pengukuran dan prediksi untuk balita ini.
+                </flux:text>
+            @else
+                <div class="overflow-x-auto mt-4">
+                    <table class="w-full text-left text-body-sm min-w-[600px]">
+                        <thead>
+                            <tr class="bg-surface-2 text-ink font-semibold border-b border-hairline">
+                                <th class="p-3">Tanggal Ukur</th>
+                                <th class="p-3">Pengukuran Fisik</th>
+                                <th class="p-3">Diagnosis AI (ML)</th>
+                                <th class="p-3">Petugas Catat</th>
+                                <th class="p-3">Validasi Medis</th>
+                                <th class="p-3 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($balita->predictions as $prediction)
+                                <tr class="border-b border-hairline-soft bg-surface-1 hover:bg-canvas/50 transition-colors">
+                                    <td class="p-3 font-mono text-xs text-ink-muted">
+                                        {{ $prediction->examined_at->format('d M Y') }}
+                                    </td>
+                                    <td class="p-3 font-mono text-xs text-ink-muted">
+                                        <div class="flex flex-col">
+                                            <span>TB: <strong class="text-ink">{{ $prediction->height }} cm</strong></span>
+                                            <span>BB: <strong class="text-ink">{{ $prediction->weight }} kg</strong></span>
+                                            <span>Usia: <strong>{{ $prediction->age_months }} Bulan</strong></span>
+                                        </div>
+                                    </td>
+                                    <td class="p-3">
+                                        <div class="flex flex-col gap-1">
+                                            @if($prediction->result === 'severely_stunted')
+                                                <span class="inline-block w-fit px-2 py-0.5 bg-risk-high-surface text-risk-high rounded text-[10px] font-bold">Sangat Pendek</span>
+                                            @elseif($prediction->result === 'stunted')
+                                                <span class="inline-block w-fit px-2 py-0.5 bg-risk-high-surface text-risk-high rounded text-[10px] font-bold">Pendek (Stunted)</span>
+                                            @elseif($prediction->result === 'stunting_risk')
+                                                <span class="inline-block w-fit px-2 py-0.5 bg-risk-medium-surface text-risk-medium rounded text-[10px] font-bold">Risiko Stunting</span>
+                                            @else
+                                                <span class="inline-block w-fit px-2 py-0.5 bg-risk-low-surface text-risk-low rounded text-[10px] font-bold">Normal</span>
+                                            @endif
+                                            <span class="text-[10px] text-ink-subtle font-mono">Conf: {{ number_format($prediction->confidence * 100, 2) }}%</span>
+                                        </div>
+                                    </td>
+                                    <td class="p-3 text-ink-muted text-xs">
+                                        {{ $prediction->recorder->name ?? '-' }}
+                                    </td>
+                                    <td class="p-3">
+                                        @php
+                                            $status = $prediction->intervention ? ($prediction->intervention->status === 'pending' ? 'pending' : 'verified') : 'verified';
+                                        @endphp
+                                        @if($status === 'pending')
+                                            <span class="inline-block px-2 py-0.5 bg-risk-medium-surface/70 text-risk-medium border border-risk-medium-border rounded text-[10px] font-bold">⏳ Pending</span>
+                                        @else
+                                            <span class="inline-block px-2 py-0.5 bg-risk-low-surface/70 text-risk-low border border-risk-low-border rounded text-[10px] font-bold">✓ Verified</span>
+                                        @endif
+                                    </td>
+                                    <td class="p-3 text-right">
+                                        <flux:button size="sm" icon="eye" :href="route('prediksi.show', $prediction->id)" class="cursor-pointer" wire:navigate />
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
         </flux:card>
 
     </div>

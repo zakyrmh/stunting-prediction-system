@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable(['child_id', 'posyandu_id', 'recorded_by', 'session_id', 'weight', 'height', 'age_months', 'examined_at', 'result', 'confidence', 'notes'])]
 class Prediction extends Model
@@ -30,7 +31,12 @@ class Prediction extends Model
 
     public function child(): BelongsTo
     {
-        return $this->belongsTo(Children::class);
+        return $this->belongsTo(Children::class, 'child_id');
+    }
+
+    public function intervention(): HasOne
+    {
+        return $this->hasOne(Intervention::class);
     }
 
     public function recorder(): BelongsTo
