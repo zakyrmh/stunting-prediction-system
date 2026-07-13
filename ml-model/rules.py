@@ -53,7 +53,6 @@ def dapatkan_rekomendasi(status_ml: str, cf_total: float, daftar_gejala: list) -
     if "R06" in daftar_gejala or "R09" in daftar_gejala or cf_total > 85:
         rekomendasi.append("⚠️ SEGERA RUJUK ke Fasilitas Kesehatan / Puskesmas untuk penanganan gizi buruk akut klinis.")
         rekomendasi.append("Berikan PMT (Pemberian Makanan Tambahan) Pemulihan di bawah pengawasan medis.")
-        return rekomendasi
 
     # Aturan Rekomendasi Intervensi Gizi Makro/Mikro
     if status_ml == "Stunting" or "R03" in daftar_gejala or "R04" in daftar_gejala:
