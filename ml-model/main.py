@@ -1,6 +1,7 @@
 # main.py
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
+from typing import Literal
 import joblib
 import numpy as np
 import rules # Mengimpor file rules.py yang kita buat di atas
@@ -22,7 +23,7 @@ except Exception as e:
 # Buku Menu Input Baru (Mendukung Hybrid System)
 class SkenarioKonsultasi(BaseModel):
     # Data Fisik (Untuk Machine Learning)
-    gender: int = Field(..., description="0: Laki-laki, 1: Perempuan")
+    gender: Literal[0, 1] = Field(..., description="0: Laki-laki, 1: Perempuan")
     age_months: float = Field(..., gt=0)
     weight: float = Field(..., gt=0)
     height: float = Field(..., gt=0)
