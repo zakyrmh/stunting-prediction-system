@@ -24,9 +24,9 @@ except Exception as e:
 class SkenarioKonsultasi(BaseModel):
     # Data Fisik (Untuk Machine Learning)
     gender: Literal[0, 1] = Field(..., description="0: Laki-laki, 1: Perempuan")
-    age_months: float = Field(..., gt=0)
-    weight: float = Field(..., gt=0)
-    height: float = Field(..., gt=0)
+    age_months: float = Field(..., gt=0, description="Usia dalam bulan (harus > 0)")
+    weight: float = Field(..., ge=1.0, description="Berat badan dalam kg (minimal 1.0)")
+    height: float = Field(..., ge=30.0, description="Tinggi badan dalam cm (minimal 30.0)")
     
     # Data Gejala & Riwayat (Untuk Sistem Pakar Certainty Factor)
     # Nilai diinput dalam skala 0.0 (Tidak Ada) sampai 1.0 (Sangat Yakin/Pasti)
