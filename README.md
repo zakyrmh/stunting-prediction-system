@@ -162,6 +162,8 @@ cd stunting-prediction-system
 2.  Buat dan aktifkan virtual environment Python:
     ```bash
     # Windows (PowerShell)
+    # Catatan: Jika script activation diblokir oleh sistem, jalankan dahulu di PowerShell Anda:
+    # Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
     python -m venv venv
     .\venv\Scripts\Activate.ps1
 
@@ -175,12 +177,32 @@ cd stunting-prediction-system
     ```
 3.  Install semua dependensi dari file `requirements.txt`:
     ```bash
+    # Jika virtual environment sudah aktif:
     pip install -r requirements.txt
+
+    # Alternatif (tanpa mengaktifkan virtual environment secara manual):
+    # Windows:
+    .\venv\Scripts\python -m pip install -r requirements.txt
+    # Linux / macOS:
+    ./venv/bin/python -m pip install -r requirements.txt
     ```
 4.  Jalankan server API FastAPI di port `8001`:
     ```bash
+    # Menjalankan menggunakan Python Virtual Environment secara langsung
+    # (Sangat Direkomendasikan untuk menghindari konflik PATH pada sistem operasi Windows)
+    # Windows:
+    .\venv\Scripts\python -m uvicorn main:app --port 8001 --reload
+    
+    # Linux / macOS:
+    ./venv/bin/python -m uvicorn main:app --port 8001 --reload
+    
+    # Atau jika virtual environment sudah teraktivasi dengan benar di terminal:
     uvicorn main:app --port 8001 --reload
     ```
+    > [!IMPORTANT]
+    > **PEMECAHAN MASALAH (TROUBLESHOOTING):**
+    > Jika Anda menemui error `ModuleNotFoundError: No module named 'joblib'` ketika menjalankan server, ini berarti sistem memanggil executable `uvicorn` global di luar folder `venv` Anda. Solusinya, panggil python dari virtual environment secara langsung seperti di atas: **`.\venv\Scripts\python -m uvicorn main:app --port 8001 --reload`**.
+
     > [!TIP]
     > Server FastAPI Anda kini aktif di `http://127.0.0.1:8001`. Anda dapat membuka dokumentasi interaktif Swagger API di `http://127.0.0.1:8001/docs`.
 
